@@ -5,4 +5,5 @@
     <dimen name="spacing_m">24dp</dimen>
     <dimen name="spacing_l">32dp</dimen>
     <dimen name="screen_horizontal_margin">32dp</dimen>
+    <dimen name="bottom_overlay_inset">112dp</dimen>
 </resources>

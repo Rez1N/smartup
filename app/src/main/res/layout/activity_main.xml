@@ -8,13 +8,15 @@
 
     <ScrollView
         android:id="@+id/contentScroll"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/spacing_l"
+        android:paddingBottom="@dimen/bottom_overlay_inset"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/alarmInfoContainer">
+        app:layout_constraintBottom_toTopOf="@+id/btnInlineCancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
@@ -203,13 +205,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_marginHorizontal="@dimen/screen_horizontal_margin"
         android:layout_marginBottom="@dimen/spacing_s"
-        android:background="@android:color/transparent"
+        android:background="?attr/colorSurface"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/btnInlineCancel">
 
         <TextView
             android:id="@+id/tvAlarmInfo"
@@ -220,18 +222,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnInlineCancel"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/btnInlineCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Отменить"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnInlineCancel"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Отменить"
+        android:insetTop="8dp"
+        android:insetBottom="8dp"
+        android:layout_marginBottom="@dimen/spacing_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:iconGravity="textStart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -192,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideAlarmInfo() {
         binding.tvSelectedTime.text = "Будильник не установлен"
-        binding.alarmInfoContainer.visibility = android.view.View.GONE
+        binding.alarmInfoContainer.visibility = android.view.View.INVISIBLE
     }
 
     private fun openDatePicker() {
