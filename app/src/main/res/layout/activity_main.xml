@@ -235,6 +235,7 @@
         android:insetTop="8dp"
         android:insetBottom="8dp"
         android:layout_marginBottom="@dimen/spacing_s"
+        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

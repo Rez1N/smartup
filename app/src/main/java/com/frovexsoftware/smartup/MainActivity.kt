@@ -1,5 +1,6 @@
 package com.frovexsoftware.smartup
 
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -7,12 +8,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.frovexsoftware.smartup.databinding.ActivityMainBinding
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.ArrayList
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +23,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var selectedDateMillis: Long? = null
     private val alarms = mutableListOf<AlarmItem>()
+
+    private val editAlarmLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        val data = result.data ?: return@registerForActivityResult
+        handleEditResult(data)
+    }
 
     private val weekdayChips by lazy {
         mapOf(
@@ -83,6 +92,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addAlarm(timeInMillis: Long, weekdays: Set<Int>, dateMillis: Long?) {
+        val alarmId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
+        val item = AlarmItem(alarmId, timeInMillis, weekdays, dateMillis, enabled = true)
+        alarms.add(item)
+        scheduleAlarm(item)
+        saveAlarms()
+        renderAlarms()
+        Toast.makeText(this, "Будильник добавлен", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun scheduleAlarm(item: AlarmItem) {
+        cancelScheduledAlarm(item)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
@@ -108,44 +128,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val alarmId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
         val intent = Intent(this, AlarmReceiver::class.java).apply {
-            putExtra("alarm_id", alarmId)
-            putExtra("time", timeInMillis)
+            putExtra("alarm_id", item.id)
+            putExtra("time", item.timeInMillis)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             this,
-            alarmId,
+            item.id,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val clockInfo = AlarmManager.AlarmClockInfo(timeInMillis, pendingIntent)
+        val clockInfo = AlarmManager.AlarmClockInfo(item.timeInMillis, pendingIntent)
         alarmManager.setAlarmClock(clockInfo, pendingIntent)
-
-        val item = AlarmItem(alarmId, timeInMillis, weekdays, dateMillis)
-        alarms.add(item)
-        saveAlarms()
-        renderAlarms()
-        Toast.makeText(this, "Будильник добавлен", Toast.LENGTH_SHORT).show()
     }
 
-    private fun cancelAllAlarms() {
-        if (alarms.isEmpty()) {
-            hideAlarmInfo()
-            Toast.makeText(this, "Будильников нет", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        alarms.toList().forEach { cancelAlarm(it) }
-        alarms.clear()
-        saveAlarms()
-        renderAlarms()
-        hideAlarmInfo()
-        Toast.makeText(this, "Все будильники отменены", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun cancelAlarm(item: AlarmItem) {
+    private fun cancelScheduledAlarm(item: AlarmItem) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlarmReceiver::class.java)
         val existing = PendingIntent.getBroadcast(
@@ -159,7 +157,25 @@ class MainActivity : AppCompatActivity() {
             alarmManager.cancel(it)
             it.cancel()
         }
+    }
 
+    private fun cancelAllAlarms() {
+        if (alarms.isEmpty()) {
+            hideAlarmInfo()
+            Toast.makeText(this, "Будильников нет", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        alarms.toList().forEach { cancelScheduledAlarm(it) }
+        alarms.clear()
+        saveAlarms()
+        renderAlarms()
+        hideAlarmInfo()
+        Toast.makeText(this, "Все будильники отменены", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun cancelAlarm(item: AlarmItem) {
+        cancelScheduledAlarm(item)
         alarms.removeAll { it.id == item.id }
         saveAlarms()
         renderAlarms()
@@ -170,7 +186,12 @@ class MainActivity : AppCompatActivity() {
             hideAlarmInfo()
             return
         }
-        val last = alarms.last()
+        val activeAlarms = alarms.filter { it.enabled }
+        if (activeAlarms.isEmpty()) {
+            hideAlarmInfo()
+            return
+        }
+        val last = activeAlarms.last()
         val cal = Calendar.getInstance().apply { timeInMillis = last.timeInMillis }
         val hour = cal.get(Calendar.HOUR_OF_DAY)
         val minute = cal.get(Calendar.MINUTE)
@@ -185,8 +206,9 @@ class MainActivity : AppCompatActivity() {
             weekdaysStr.isNotEmpty() -> " ($weekdaysStr)"
             else -> ""
         }
-        binding.tvSelectedTime.text = "Активных будильников: ${alarms.size}. Последний: $timeStr$extra"
-        binding.tvAlarmInfo.text = "Активных будильников: ${alarms.size}"
+        val activeCount = activeAlarms.size
+        binding.tvSelectedTime.text = "Активных будильников: $activeCount. Последний: $timeStr$extra"
+        binding.tvAlarmInfo.text = "Активных будильников: $activeCount"
         binding.alarmInfoContainer.visibility = android.view.View.VISIBLE
     }
 
@@ -261,6 +283,8 @@ class MainActivity : AppCompatActivity() {
             obj.put("time", alarm.timeInMillis)
             obj.put("date", alarm.dateMillis ?: JSONObject.NULL)
             obj.put("weekdays", JSONArray(alarm.weekdays.toList()))
+            obj.put("enabled", alarm.enabled)
+            obj.put("description", alarm.description)
             json.put(obj)
         }
         prefs.edit().putString("alarms_json", json.toString()).apply()
@@ -276,12 +300,14 @@ class MainActivity : AppCompatActivity() {
                 val id = obj.getInt("id")
                 val time = obj.getLong("time")
                 val dateMillis = if (obj.isNull("date")) null else obj.getLong("date")
+                val enabled = obj.optBoolean("enabled", true)
+                val description = obj.optString("description", "")
                 val weekdaysJson = obj.optJSONArray("weekdays") ?: JSONArray()
                 val weekdaysSet = mutableSetOf<Int>()
                 for (j in 0 until weekdaysJson.length()) {
                     weekdaysSet.add(weekdaysJson.getInt(j))
                 }
-                alarms.add(AlarmItem(id, time, weekdaysSet, dateMillis))
+                alarms.add(AlarmItem(id, time, weekdaysSet, dateMillis, enabled, description))
             }
         }.onFailure { alarms.clear() }
     }
@@ -294,7 +320,7 @@ class MainActivity : AppCompatActivity() {
         alarms.sortedBy { it.timeInMillis }.forEach { alarm ->
             val view = inflater.inflate(R.layout.item_alarm, binding.alarmsContainer, false)
             val info = view.findViewById<android.widget.TextView>(R.id.tvAlarmInfo)
-            val btnCancel = view.findViewById<android.widget.Button>(R.id.btnCancelAlarmItem)
+            val switchEnabled = view.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.switchAlarmEnabled)
 
             val cal = Calendar.getInstance().apply { timeInMillis = alarm.timeInMillis }
             val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -310,11 +336,18 @@ class MainActivity : AppCompatActivity() {
                 weekdaysStr.isNotEmpty() -> " ($weekdaysStr)"
                 else -> ""
             }
-            info.text = "$timeStr$extra"
+            val descSuffix = if (alarm.description.isNotBlank()) " — ${alarm.description}" else ""
+            info.text = "$timeStr$extra$descSuffix"
 
-            btnCancel.setOnClickListener {
-                cancelAlarm(alarm)
-                showAlarmInfo()
+            switchEnabled.isChecked = alarm.enabled
+            switchEnabled.text = if (alarm.enabled) "Вкл" else "Выкл"
+            switchEnabled.setOnCheckedChangeListener { _, isChecked ->
+                switchEnabled.text = if (isChecked) "Вкл" else "Выкл"
+                updateAlarmEnabled(alarm, isChecked)
+            }
+
+            view.setOnClickListener {
+                openEditAlarm(alarm)
             }
 
             binding.alarmsContainer.addView(view)
@@ -323,10 +356,66 @@ class MainActivity : AppCompatActivity() {
 
     data class AlarmItem(
         val id: Int,
-        val timeInMillis: Long,
-        val weekdays: Set<Int>,
-        val dateMillis: Long?
+        var timeInMillis: Long,
+        var weekdays: Set<Int>,
+        var dateMillis: Long?,
+        var enabled: Boolean,
+        var description: String = ""
     )
+
+    private fun updateAlarmEnabled(item: AlarmItem, enabled: Boolean) {
+        item.enabled = enabled
+        if (enabled) {
+            scheduleAlarm(item)
+        } else {
+            cancelScheduledAlarm(item)
+        }
+        saveAlarms()
+        renderAlarms()
+        showAlarmInfo()
+    }
+
+    private fun openEditAlarm(alarm: AlarmItem) {
+        val intent = Intent(this, EditAlarmActivity::class.java).apply {
+            putExtra("alarm_id", alarm.id)
+            putExtra("time", alarm.timeInMillis)
+            putExtra("date", alarm.dateMillis ?: -1L)
+            putExtra("enabled", alarm.enabled)
+            putExtra("description", alarm.description)
+            putExtra("is24h", binding.switch24h.isChecked)
+            putIntegerArrayListExtra("weekdays", ArrayList(alarm.weekdays))
+        }
+        editAlarmLauncher.launch(intent)
+    }
+
+    private fun handleEditResult(data: Intent) {
+        val id = data.getIntExtra("alarm_id", -1)
+        if (id == -1) return
+        val target = alarms.find { it.id == id } ?: return
+
+        val newTime = data.getLongExtra("time", target.timeInMillis)
+        val newDate = data.getLongExtra("date", -1L).let { if (it == -1L) null else it }
+        val newEnabled = data.getBooleanExtra("enabled", target.enabled)
+        val newDescription = data.getStringExtra("description") ?: ""
+        val weekdaysList = data.getIntegerArrayListExtra("weekdays") ?: arrayListOf<Int>()
+        val newWeekdays = weekdaysList.toSet()
+
+        cancelScheduledAlarm(target)
+
+        target.timeInMillis = newTime
+        target.dateMillis = newDate
+        target.enabled = newEnabled
+        target.description = newDescription
+        target.weekdays = newWeekdays
+
+        if (target.enabled) {
+            scheduleAlarm(target)
+        }
+
+        saveAlarms()
+        renderAlarms()
+        showAlarmInfo()
+    }
 
     private fun applySavedTheme(prefs: android.content.SharedPreferences) {
         val mode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
