@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <ScrollView
+        android:id="@+id/contentScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/screen_horizontal_margin"
-        android:paddingEnd="@dimen/screen_horizontal_margin"
-        android:paddingTop="@dimen/spacing_l"
-        android:paddingBottom="@dimen/spacing_l">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_l"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/alarmInfoContainer">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/screen_horizontal_margin"
+            android:paddingEnd="@dimen/screen_horizontal_margin"
+            android:paddingTop="@dimen/spacing_l"
+            android:paddingBottom="@dimen/spacing_l">
 
         <TimePicker
             android:id="@+id/timePicker"
@@ -54,21 +63,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Установить будильник"
-            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@id/switch24h"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnCancelAlarm"
-            android:layout_marginStart="@dimen/spacing_s"
-            android:layout_marginEnd="@dimen/spacing_s"
-            android:layout_marginTop="@dimen/spacing_m" />
-
-        <Button
-            android:id="@+id/btnCancelAlarm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Отменить будильник"
-            app:layout_constraintTop_toBottomOf="@id/switch24h"
-            app:layout_constraintStart_toEndOf="@+id/btnSetAlarm"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/spacing_s"
             android:layout_marginEnd="@dimen/spacing_s"
@@ -198,41 +194,44 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/alarmInfoContainer"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/alarmInfoContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:layout_marginHorizontal="@dimen/screen_horizontal_margin"
+        android:layout_marginBottom="@dimen/spacing_s"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tvAlarmInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:visibility="gone"
+            android:text="Будильник"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnInlineCancel"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnInlineCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Отменить"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/alarmsContainer"
-            android:layout_margin="@dimen/spacing_m"
-            android:background="@android:color/transparent">
-
-            <TextView
-                android:id="@+id/tvAlarmInfo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Будильник"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btnInlineCancel"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/btnInlineCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Отменить"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

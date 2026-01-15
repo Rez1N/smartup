@@ -69,10 +69,6 @@ class MainActivity : AppCompatActivity() {
             showAlarmInfo()
         }
 
-        binding.btnCancelAlarm.setOnClickListener {
-            cancelAllAlarms()
-        }
-
         binding.btnInlineCancel.setOnClickListener {
             cancelAllAlarms()
         }
