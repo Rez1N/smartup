@@ -45,6 +45,7 @@ class EditAlarmActivity : AppCompatActivity() {
         bindInitialData()
         setupDateButtons()
         findViewById<Button>(R.id.btnSaveAlarm).setOnClickListener { onSave() }
+        findViewById<Button>(R.id.btnDeleteAlarm).setOnClickListener { onDelete() }
     }
 
     private fun bindInitialData() {
@@ -126,6 +127,15 @@ class EditAlarmActivity : AppCompatActivity() {
             putExtra("enabled", switchEnabled.isChecked)
             putExtra("description", descriptionField.text.toString())
             putIntegerArrayListExtra("weekdays", ArrayList(selectedWeekdays))
+        }
+        setResult(RESULT_OK, result)
+        finish()
+    }
+
+    private fun onDelete() {
+        val result = Intent().apply {
+            putExtra("alarm_id", intent.getIntExtra("alarm_id", -1))
+            putExtra("delete", true)
         }
         setResult(RESULT_OK, result)
         finish()

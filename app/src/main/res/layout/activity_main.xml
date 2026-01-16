@@ -47,6 +47,57 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/spacing_s" />
 
+        <TextView
+            android:id="@+id/tvChallengeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Челлендж перед отключением"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/spacing_m"
+            app:layout_constraintTop_toBottomOf="@id/switch24h"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnChooseChallenge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:text="Выбрать челлендж"
+            app:layout_constraintTop_toBottomOf="@id/tvChallengeLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvChallengeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="Без челленджа"
+            app:layout_constraintTop_toBottomOf="@id/btnChooseChallenge"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilChallengeText"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvChallengeValue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etChallengePhrase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Фраза для ввода"
+                android:inputType="textCapSentences" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <ImageButton
             android:id="@+id/btnSettings"
             android:layout_width="40dp"
@@ -65,7 +116,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Установить будильник"
-            app:layout_constraintTop_toBottomOf="@id/switch24h"
+            app:layout_constraintTop_toBottomOf="@id/tilChallengeText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/spacing_s"

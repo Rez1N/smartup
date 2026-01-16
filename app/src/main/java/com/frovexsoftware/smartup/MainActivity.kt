@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.Toast
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var selectedDateMillis: Long? = null
     private val alarms = mutableListOf<AlarmItem>()
+    private var selectedChallenge: String = "Без челленджа"
 
     private val editAlarmLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
@@ -62,6 +64,10 @@ class MainActivity : AppCompatActivity() {
             showThemeDialog(prefs)
         }
 
+        binding.btnChooseChallenge.setOnClickListener {
+            showChallengeChooser()
+        }
+
         binding.btnSelectDate.setOnClickListener { openDatePicker() }
         binding.btnClearDate.setOnClickListener { clearDateSelection() }
 
@@ -91,9 +97,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addAlarm(timeInMillis: Long, weekdays: Set<Int>, dateMillis: Long?) {
+    private fun addAlarm(
+        timeInMillis: Long,
+        weekdays: Set<Int>,
+        dateMillis: Long?
+    ) {
         val alarmId = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
-        val item = AlarmItem(alarmId, timeInMillis, weekdays, dateMillis, enabled = true)
+        val item = AlarmItem(alarmId, timeInMillis, weekdays, dateMillis, enabled = true, description = "")
         alarms.add(item)
         scheduleAlarm(item)
         saveAlarms()
@@ -247,6 +257,21 @@ class MainActivity : AppCompatActivity() {
         } ?: "Выбрать дату"
     }
 
+    private fun showChallengeChooser() {
+        val options = arrayOf("Без челленджа", "Ввести фразу", "Змейка", "Точки 4x4")
+        val currentIndex = options.indexOfFirst { it == selectedChallenge }.coerceAtLeast(0)
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Челлендж")
+            .setSingleChoiceItems(options, currentIndex) { dialog, which ->
+                selectedChallenge = options[which]
+                binding.tvChallengeValue.text = selectedChallenge
+                binding.tilChallengeText.visibility = if (selectedChallenge == "Ввести фразу") View.VISIBLE else View.GONE
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
     private fun clearDateSelection() {
         selectedDateMillis = null
         updateDateButtonText()
@@ -392,6 +417,16 @@ class MainActivity : AppCompatActivity() {
         val id = data.getIntExtra("alarm_id", -1)
         if (id == -1) return
         val target = alarms.find { it.id == id } ?: return
+
+        if (data.getBooleanExtra("delete", false)) {
+            cancelScheduledAlarm(target)
+            alarms.removeAll { it.id == id }
+            saveAlarms()
+            renderAlarms()
+            if (alarms.isEmpty()) hideAlarmInfo() else showAlarmInfo()
+            Toast.makeText(this, "Будильник удалён", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val newTime = data.getLongExtra("time", target.timeInMillis)
         val newDate = data.getLongExtra("date", -1L).let { if (it == -1L) null else it }

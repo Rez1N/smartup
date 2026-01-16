@@ -30,7 +30,7 @@ object AlarmNotifier {
     }
 
     private var currentContext: Context? = null
-
+    
     fun start(context: Context) {
         val appCtx = context.applicationContext
         currentContext = appCtx
@@ -51,13 +51,12 @@ object AlarmNotifier {
     private fun postNotification(context: Context) {
         ensureChannel(context)
 
-        val fullScreenIntent = Intent(context, StopAlarmActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
         val fullScreenPendingIntent = PendingIntent.getActivity(
             context,
             1,
-            fullScreenIntent,
+            Intent(context, StopAlarmActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
             PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -95,4 +94,5 @@ object AlarmNotifier {
         }
         manager.createNotificationChannel(channel)
     }
+
 }
