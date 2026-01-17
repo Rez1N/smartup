@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
-import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.TimePicker
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -18,12 +20,14 @@ import java.util.ArrayList
 class EditAlarmActivity : AppCompatActivity() {
 
     private var selectedDateMillis: Long? = null
+    private var isNew: Boolean = false
     private lateinit var timePicker: TimePicker
     private lateinit var descriptionField: EditText
     private lateinit var switchEnabled: SwitchMaterial
     private lateinit var chipGroup: ChipGroup
     private lateinit var weekdayChips: Map<Chip, Int>
-    private lateinit var challengeGroup: RadioGroup
+    private lateinit var challengeValue: TextView
+    private var selectedChallengeType: ChallengeType = ChallengeType.NONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +37,8 @@ class EditAlarmActivity : AppCompatActivity() {
         descriptionField = findViewById(R.id.etDescription)
         switchEnabled = findViewById(R.id.switchEnabledEdit)
         chipGroup = findViewById(R.id.chipGroupWeekdaysEdit)
-        challengeGroup = findViewById(R.id.rgChallengeTypeEdit)
+        challengeValue = findViewById(R.id.tvChallengeValueEdit)
+        isNew = intent.getIntExtra("alarm_id", -1) == -1
 
         weekdayChips = mapOf(
             findViewById<Chip>(R.id.chipMonEdit) to Calendar.MONDAY,
@@ -47,8 +52,12 @@ class EditAlarmActivity : AppCompatActivity() {
 
         bindInitialData()
         setupDateButtons()
+        findViewById<Button>(R.id.btnChooseChallengeEdit).setOnClickListener { openChallengeDialog() }
         findViewById<Button>(R.id.btnSaveAlarm).setOnClickListener { onSave() }
-        findViewById<Button>(R.id.btnDeleteAlarm).setOnClickListener { onDelete() }
+        findViewById<Button>(R.id.btnDeleteAlarm).apply {
+            visibility = if (isNew) View.GONE else View.VISIBLE
+            setOnClickListener { onDelete() }
+        }
     }
 
     private fun bindInitialData() {
@@ -65,16 +74,8 @@ class EditAlarmActivity : AppCompatActivity() {
         selectedDateMillis = intent.getLongExtra("date", -1L).let { if (it == -1L) null else it }
         intent.getIntegerArrayListExtra("weekdays")?.toSet()?.let { setWeekdaysChecked(it) }
 
-        val challengeType = ChallengeType.from(intent.getStringExtra("challenge_type"))
-        when (challengeType) {
-            ChallengeType.NONE -> challengeGroup.check(R.id.rbChallengeNoneEdit)
-            ChallengeType.SNAKE -> challengeGroup.check(R.id.rbChallengeSnakeEdit)
-            ChallengeType.DOTS -> challengeGroup.check(R.id.rbChallengeDotsEdit)
-            ChallengeType.MATH -> challengeGroup.check(R.id.rbChallengeMathEdit)
-            ChallengeType.DATE -> challengeGroup.check(R.id.rbChallengeDateEdit)
-            ChallengeType.COLOR -> challengeGroup.check(R.id.rbChallengeColorEdit)
-            else -> challengeGroup.check(R.id.rbChallengeNoneEdit)
-        }
+        selectedChallengeType = ChallengeType.from(intent.getStringExtra("challenge_type")) ?: ChallengeType.NONE
+        updateChallengeValue()
 
         switchEnabled.isChecked = intent.getBooleanExtra("enabled", true)
     }
@@ -125,17 +126,6 @@ class EditAlarmActivity : AppCompatActivity() {
         weekdayChips.forEach { (chip, day) -> chip.isChecked = days.contains(day) }
     }
 
-    private fun getSelectedChallengeType(): ChallengeType {
-        return when (challengeGroup.checkedRadioButtonId) {
-            R.id.rbChallengeSnakeEdit -> ChallengeType.SNAKE
-            R.id.rbChallengeDotsEdit -> ChallengeType.DOTS
-            R.id.rbChallengeMathEdit -> ChallengeType.MATH
-            R.id.rbChallengeDateEdit -> ChallengeType.DATE
-            R.id.rbChallengeColorEdit -> ChallengeType.COLOR
-            else -> ChallengeType.NONE
-        }
-    }
-
     private fun onSave() {
         val selectedWeekdays = getSelectedWeekdays()
         val triggerCal = TimeLogic.calculateNextTrigger(
@@ -152,10 +142,44 @@ class EditAlarmActivity : AppCompatActivity() {
             putExtra("enabled", switchEnabled.isChecked)
             putExtra("description", descriptionField.text.toString())
             putIntegerArrayListExtra("weekdays", ArrayList(selectedWeekdays))
-            putExtra("challenge_type", getSelectedChallengeType().name)
+            putExtra("challenge_type", selectedChallengeType.name)
         }
         setResult(RESULT_OK, result)
         finish()
+    }
+
+    private fun openChallengeDialog() {
+        val entries = listOf(
+            "Без челленджа" to ChallengeType.NONE,
+            "Змейка" to ChallengeType.SNAKE,
+            "Соединить точки 4x4" to ChallengeType.DOTS,
+            "Математический пример" to ChallengeType.MATH,
+            "Написать сегодняшнюю дату" to ChallengeType.DATE,
+            "Угадать цвет" to ChallengeType.COLOR
+        )
+        val currentIndex = entries.indexOfFirst { it.second == selectedChallengeType }.coerceAtLeast(0)
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Челлендж")
+            .setSingleChoiceItems(entries.map { it.first }.toTypedArray(), currentIndex) { dialog, which ->
+                selectedChallengeType = entries[which].second
+                updateChallengeValue()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun updateChallengeValue() {
+        val text = when (selectedChallengeType) {
+            ChallengeType.NONE -> "Без челленджа"
+            ChallengeType.SNAKE -> "Змейка"
+            ChallengeType.DOTS -> "Соединить точки 4x4"
+            ChallengeType.MATH -> "Математический пример"
+            ChallengeType.DATE -> "Написать сегодняшнюю дату"
+            ChallengeType.COLOR -> "Угадать цвет"
+            else -> "Без челленджа"
+        }
+        challengeValue.text = text
     }
 
     private fun onDelete() {

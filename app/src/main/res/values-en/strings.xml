@@ -20,4 +20,8 @@
     <string name="dots_pattern_complete">Pattern matched!</string>
     <string name="dots_pattern_name">Pattern: %1$s</string>
     <string name="dots_pattern_name_placeholder">Pattern: ?</string>
+
+    <string name="alarms_title">My alarms</string>
+    <string name="alarms_empty">No alarms yet</string>
+    <string name="alarms_add">Create alarm</string>
 </resources>

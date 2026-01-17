@@ -20,4 +20,8 @@
     <string name="dots_pattern_complete">Узор совпал!</string>
     <string name="dots_pattern_name">Узор: %1$s</string>
     <string name="dots_pattern_name_placeholder">Узор: ?</string>
+
+    <string name="alarms_title">Мои будильники</string>
+    <string name="alarms_empty">Будильников пока нет</string>
+    <string name="alarms_add">Создать будильник</string>
 </resources>
