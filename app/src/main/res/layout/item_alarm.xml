@@ -28,7 +28,7 @@
                 android:id="@+id/tvAlarmTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="07:00"
+                android:text="@string/alarm_time_placeholder"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textStyle="bold"
                 android:textColor="@color/alarm_text_primary" />
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Пн, Ср • Без описания"
+                android:text="@string/alarm_meta_none"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 android:textColor="@color/alarm_text_secondary" />
         </LinearLayout>
@@ -47,7 +47,7 @@
             android:id="@+id/switchAlarmEnabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Вкл"
+            android:text="@string/alarm_switch_on"
             android:paddingStart="8dp"
             app:useMaterialThemeColors="true" />
     </LinearLayout>

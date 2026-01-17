@@ -1,19 +1,22 @@
 package com.frovexsoftware.smartup
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
 import android.view.View
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import java.util.Calendar
 import java.util.ArrayList
 
@@ -28,6 +31,10 @@ class EditAlarmActivity : AppCompatActivity() {
     private lateinit var weekdayChips: Map<Chip, Int>
     private lateinit var challengeValue: TextView
     private var selectedChallengeType: ChallengeType = ChallengeType.NONE
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,9 +59,9 @@ class EditAlarmActivity : AppCompatActivity() {
 
         bindInitialData()
         setupDateButtons()
-        findViewById<Button>(R.id.btnChooseChallengeEdit).setOnClickListener { openChallengeDialog() }
-        findViewById<Button>(R.id.btnSaveAlarm).setOnClickListener { onSave() }
-        findViewById<Button>(R.id.btnDeleteAlarm).apply {
+        findViewById<MaterialButton>(R.id.btnChooseChallengeEdit).setOnClickListener { openChallengeDialog() }
+        findViewById<MaterialButton>(R.id.btnSaveAlarm).setOnClickListener { onSave() }
+        findViewById<MaterialButton>(R.id.btnDeleteAlarm).apply {
             visibility = if (isNew) View.GONE else View.VISIBLE
             setOnClickListener { onDelete() }
         }
@@ -81,20 +88,23 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun setupDateButtons() {
-        val btnSelect = findViewById<Button>(R.id.btnSelectDateEdit)
-        val btnClear = findViewById<Button>(R.id.btnClearDateEdit)
+        val btnSelect = findViewById<MaterialButton>(R.id.btnSelectDateEdit)
+        val btnClear = findViewById<MaterialButton>(R.id.btnClearDateEdit)
 
         btnSelect.setOnClickListener { openDatePicker() }
         btnClear.setOnClickListener {
             selectedDateMillis = null
-            btnSelect.text = "Выбрать дату"
+            btnSelect.text = getString(R.string.edit_select_date)
+            updateDateButtonsAppearance(btnSelect, btnClear)
         }
 
-        selectedDateMillis?.let { updateDateButtonText(btnSelect, it) }
+        selectedDateMillis?.let { updateDateButtonText(btnSelect, btnClear, it) }
+            ?: updateDateButtonsAppearance(btnSelect, btnClear)
     }
 
     private fun openDatePicker() {
-        val btnSelect = findViewById<Button>(R.id.btnSelectDateEdit)
+        val btnSelect = findViewById<MaterialButton>(R.id.btnSelectDateEdit)
+        val btnClear = findViewById<MaterialButton>(R.id.btnClearDateEdit)
         val now = Calendar.getInstance()
         val dialog = DatePickerDialog(this, { _: DatePicker, y: Int, m: Int, d: Int ->
             val cal = Calendar.getInstance().apply {
@@ -107,15 +117,36 @@ class EditAlarmActivity : AppCompatActivity() {
                 set(Calendar.MILLISECOND, 0)
             }
             selectedDateMillis = cal.timeInMillis
-            updateDateButtonText(btnSelect, cal.timeInMillis)
+            updateDateButtonText(btnSelect, btnClear, cal.timeInMillis)
         }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
         dialog.datePicker.minDate = now.timeInMillis
         dialog.show()
     }
 
-    private fun updateDateButtonText(button: Button, millis: Long) {
+    private fun updateDateButtonText(button: MaterialButton, clearButton: MaterialButton, millis: Long) {
         val cal = Calendar.getInstance().apply { timeInMillis = millis }
-        button.text = "Дата: ${cal.get(Calendar.DAY_OF_MONTH)}.${cal.get(Calendar.MONTH) + 1}.${cal.get(Calendar.YEAR)}"
+        button.text = getString(
+            R.string.edit_date_format,
+            cal.get(Calendar.DAY_OF_MONTH),
+            cal.get(Calendar.MONTH) + 1,
+            cal.get(Calendar.YEAR)
+        )
+        updateDateButtonsAppearance(button, clearButton)
+    }
+
+    private fun updateDateButtonsAppearance(selectButton: MaterialButton, clearButton: MaterialButton) {
+        val primary = MaterialColors.getColor(selectButton, androidx.appcompat.R.attr.colorPrimary)
+        val secondary = MaterialColors.getColor(selectButton, com.google.android.material.R.attr.colorOnSurface)
+
+        if (selectedDateMillis == null) {
+            clearButton.setTextColor(primary)
+            selectButton.setTextColor(secondary)
+            selectButton.strokeColor = ColorStateList.valueOf(secondary)
+        } else {
+            selectButton.setTextColor(primary)
+            selectButton.strokeColor = ColorStateList.valueOf(primary)
+            clearButton.setTextColor(secondary)
+        }
     }
 
     private fun getSelectedWeekdays(): Set<Int> {
@@ -150,34 +181,34 @@ class EditAlarmActivity : AppCompatActivity() {
 
     private fun openChallengeDialog() {
         val entries = listOf(
-            "Без челленджа" to ChallengeType.NONE,
-            "Змейка" to ChallengeType.SNAKE,
-            "Соединить точки 4x4" to ChallengeType.DOTS,
-            "Математический пример" to ChallengeType.MATH,
-            "Написать сегодняшнюю дату" to ChallengeType.DATE,
-            "Угадать цвет" to ChallengeType.COLOR
+            getString(R.string.challenge_none) to ChallengeType.NONE,
+            getString(R.string.challenge_snake) to ChallengeType.SNAKE,
+            getString(R.string.challenge_dots) to ChallengeType.DOTS,
+            getString(R.string.challenge_math) to ChallengeType.MATH,
+            getString(R.string.challenge_date) to ChallengeType.DATE,
+            getString(R.string.challenge_color) to ChallengeType.COLOR
         )
         val currentIndex = entries.indexOfFirst { it.second == selectedChallengeType }.coerceAtLeast(0)
         MaterialAlertDialogBuilder(this)
-            .setTitle("Челлендж")
+            .setTitle(R.string.challenge_dialog_title)
             .setSingleChoiceItems(entries.map { it.first }.toTypedArray(), currentIndex) { dialog, which ->
                 selectedChallengeType = entries[which].second
                 updateChallengeValue()
                 dialog.dismiss()
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(R.string.common_cancel, null)
             .show()
     }
 
     private fun updateChallengeValue() {
         val text = when (selectedChallengeType) {
-            ChallengeType.NONE -> "Без челленджа"
-            ChallengeType.SNAKE -> "Змейка"
-            ChallengeType.DOTS -> "Соединить точки 4x4"
-            ChallengeType.MATH -> "Математический пример"
-            ChallengeType.DATE -> "Написать сегодняшнюю дату"
-            ChallengeType.COLOR -> "Угадать цвет"
-            else -> "Без челленджа"
+            ChallengeType.NONE -> getString(R.string.challenge_none)
+            ChallengeType.SNAKE -> getString(R.string.challenge_snake)
+            ChallengeType.DOTS -> getString(R.string.challenge_dots)
+            ChallengeType.MATH -> getString(R.string.challenge_math)
+            ChallengeType.DATE -> getString(R.string.challenge_date)
+            ChallengeType.COLOR -> getString(R.string.challenge_color)
+            else -> getString(R.string.challenge_none)
         }
         challengeValue.text = text
     }

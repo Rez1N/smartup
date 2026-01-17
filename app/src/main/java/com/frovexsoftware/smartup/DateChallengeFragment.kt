@@ -39,7 +39,16 @@ class DateChallengeFragment : Fragment() {
     }
 
     internal fun isCorrect(answer: String): Boolean {
-        val correctAnswer = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateProvider())
-        return answer == correctAnswer
+        val locale = Locale.getDefault()
+        val date = dateProvider()
+        val correctFull = SimpleDateFormat("ddMMyyyy", locale).format(date)
+        val correctShort = SimpleDateFormat("ddMMyy", locale).format(date)
+
+        val normalized = answer
+            .trim()
+            .replace("\\s+".toRegex(), "")
+            .replace("[^0-9]".toRegex(), "")
+
+        return normalized == correctFull || normalized == correctShort
     }
 }

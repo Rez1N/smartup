@@ -18,7 +18,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="My alarm"
+            android:text="@string/alarms_title"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textStyle="bold"
             android:textColor="@color/alarm_text_primary"
@@ -35,7 +35,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Открыть меню"
+            android:contentDescription="@string/settings_open_menu"
             android:padding="10dp"
             android:src="@android:drawable/ic_menu_sort_by_size"
             app:layout_constraintTop_toTopOf="parent"
@@ -104,7 +104,7 @@
             android:id="@+id/tvEmptyState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No alarms yet"
+            android:text="@string/alarms_empty"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@color/alarm_text_secondary"
             android:visibility="gone"
@@ -146,7 +146,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Настройки"
+            android:text="@string/settings_title"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textColor="@color/alarm_text_primary" />
@@ -155,7 +155,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Тема"
+            android:text="@string/settings_theme"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/alarm_text_secondary" />
 
@@ -170,21 +170,21 @@
                 android:id="@+id/rbThemeSystem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Как в системе"
+                android:text="@string/settings_theme_system"
                 android:textColor="@color/alarm_text_primary" />
 
             <RadioButton
                 android:id="@+id/rbThemeLight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Светлая"
+                android:text="@string/settings_theme_light"
                 android:textColor="@color/alarm_text_primary" />
 
             <RadioButton
                 android:id="@+id/rbThemeDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Тёмная"
+                android:text="@string/settings_theme_dark"
                 android:textColor="@color/alarm_text_primary" />
         </RadioGroup>
 
@@ -192,7 +192,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Формат времени"
+            android:text="@string/settings_time_format"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/alarm_text_secondary" />
 
@@ -200,8 +200,49 @@
             android:id="@+id/switch24h"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="24-часовой формат"
+            android:text="@string/settings_time_format_24h"
             android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/settings_language"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/alarm_text_secondary" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/mbtgLang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLangSystem"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lang_system" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLangRu"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lang_ru" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLangEn"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lang_en" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
     </LinearLayout>
 

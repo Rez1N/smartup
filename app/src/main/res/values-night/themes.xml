@@ -1,6 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Smartup" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:windowBackground">@color/alarm_bg</item>
+    </style>
+
+    <style name="Theme.Smartup" parent="Base.Theme.Smartup" />
+
+    <style name="Theme.Smartup.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.Smartup</item>
     </style>
 </resources>

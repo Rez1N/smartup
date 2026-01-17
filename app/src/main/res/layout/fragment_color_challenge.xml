@@ -1,27 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:padding="24dp"
+    android:gravity="center_horizontal">
 
-    <View
-        android:id="@+id/colorView"
-        android:layout_width="200dp"
-        android:layout_height="200dp" />
-
-    <EditText
-        android:id="@+id/answerEditText"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/color_challenge_hint"
-        android:inputType="textCapWords"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/submitButton"
+    <TextView
+        android:id="@+id/tvInstruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="@string/color_challenge_hint"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/alarm_text_primary"
+        android:gravity="center"
+        android:paddingBottom="16dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/colorCard"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:strokeColor="@color/alarm_text_secondary"
+        app:strokeWidth="1dp">
+
+        <View
+            android:id="@+id/colorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilAnswer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/color_challenge_hint"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/answerEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/submitButton"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/color_submit"
+        android:insetTop="10dp"
+        android:insetBottom="10dp" />
 
 </LinearLayout>

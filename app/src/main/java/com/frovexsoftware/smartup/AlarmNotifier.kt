@@ -62,8 +62,8 @@ object AlarmNotifier {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Будильник")
-            .setContentText("Нажмите, чтобы остановить")
+            .setContentTitle(context.getString(R.string.alarm_notification_title))
+            .setContentText(context.getString(R.string.alarm_notification_text))
             .setCategory(Notification.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(false)
@@ -84,10 +84,10 @@ object AlarmNotifier {
 
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Будильники",
+            context.getString(R.string.alarm_channel_name),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Уведомления будильника"
+            description = context.getString(R.string.alarm_channel_desc)
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             setSound(null, null)
             enableVibration(true)

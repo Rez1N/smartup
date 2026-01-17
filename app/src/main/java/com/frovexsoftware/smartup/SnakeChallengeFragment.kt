@@ -40,7 +40,11 @@ class SnakeChallengeFragment : Fragment() {
 
         runnable = Runnable {
             binding.snakeBoard.update()
-            handler.postDelayed(runnable, 300)
+            binding.tvSnakeScore.text = getString(
+                R.string.snake_score,
+                binding.snakeBoard.currentScore
+            )
+            handler.postDelayed(runnable, 280)
         }
     }
 

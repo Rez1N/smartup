@@ -36,7 +36,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Время сигнала"
+                    android:text="@string/edit_time_title"
                     android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     android:textColor="@color/alarm_text_primary" />
@@ -54,14 +54,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="6dp"
-                    android:text="24-часовой формат"
+                    android:text="@string/edit_time_format_hint"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/alarm_text_secondary" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Название"
+                    android:hint="@string/edit_description_hint"
                     android:layout_marginTop="14dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -69,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapSentences"
-                        android:hint="Название" />
+                        android:hint="@string/edit_description_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -95,7 +95,7 @@
                     android:id="@+id/tvChallengeLabelEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Челлендж"
+                    android:text="@string/edit_challenge_title"
                     android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     android:textColor="@color/alarm_text_primary" />
@@ -105,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Без челленджа"
+                    android:text="@string/edit_challenge_none"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="@color/alarm_text_secondary" />
 
@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Выбрать челлендж" />
+                    android:text="@string/edit_challenge_choose" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -139,7 +139,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Дата и повтор"
+                    android:text="@string/edit_date_title"
                     android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     android:textColor="@color/alarm_text_primary" />
@@ -158,14 +158,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Выбрать дату" />
+                        android:text="@string/edit_select_date" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnClearDateEdit"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Без даты"
+                        android:text="@string/edit_clear_date"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
 
@@ -173,7 +173,7 @@
                     android:id="@+id/tvWeekdaysLabelEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Дни недели"
+                    android:text="@string/edit_weekdays_title"
                     android:layout_marginTop="12dp"
                     android:textColor="@color/alarm_text_primary" />
 
@@ -190,50 +190,50 @@
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Пн" />
+                        android:text="@string/weekday_mon" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipTueEdit"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Вт" />
+                        android:text="@string/weekday_tue" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipWedEdit"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ср" />
+                        android:text="@string/weekday_wed" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipThuEdit"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Чт" />
+                        android:text="@string/weekday_thu" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFriEdit"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Пт" />
+                        android:text="@string/weekday_fri" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipSatEdit"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Сб" />
+                        android:text="@string/weekday_sat" />
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipSunEdit"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Вс" />
+                        android:text="@string/weekday_sun" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switchEnabledEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Будильник активен"
+                    android:text="@string/edit_enabled_label"
                     app:useMaterialThemeColors="true"
                     android:layout_marginTop="12dp"
                     android:textColor="@color/alarm_text_primary" />
@@ -252,14 +252,14 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Сохранить" />
+                android:text="@string/edit_save" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDeleteAlarm"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Удалить будильник"
+                android:text="@string/edit_delete"
                 android:textColor="@android:color/holo_red_light"
                 android:layout_marginTop="10dp"
                 app:strokeColor="@android:color/holo_red_light" />

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
+import java.text.DateFormatSymbols
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,8 +17,13 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.frovexsoftware.smartup.databinding.ActivityMainBinding
 import java.util.ArrayList
 import java.util.Calendar
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: SharedPreferences
@@ -44,6 +50,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnAddAlarm.setOnClickListener { openCreateAlarm() }
 
         loadAlarms()
+        if (alarms.isNotEmpty()) {
+            AlarmScheduler.rescheduleAll(this, alarms)
+            saveAlarms()
+        }
         renderAlarms()
         if (alarms.isEmpty()) {
             hideAlarmInfo()
@@ -84,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         saveAlarms()
         renderAlarms()
         showAlarmInfo()
-        Toast.makeText(this, "Будильник добавлен", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.alarm_added), Toast.LENGTH_SHORT).show()
     }
 
     private fun showAlarmInfo() {
@@ -104,12 +114,12 @@ class MainActivity : AppCompatActivity() {
         }
         val weekdaysStr = formatWeekdays(next.weekdays)
         val extra = when {
-            dateStr != null -> " (дата: $dateStr)"
-            weekdaysStr.isNotEmpty() -> " ($weekdaysStr)"
+            dateStr != null -> getString(R.string.alarm_info_date, dateStr)
+            weekdaysStr.isNotEmpty() -> getString(R.string.alarm_info_weekdays, weekdaysStr)
             else -> ""
         }
         val activeCount = activeAlarms.size
-        binding.tvAlarmInfo.text = "Активных: $activeCount. Ближайший: $timeStr$extra"
+        binding.tvAlarmInfo.text = getString(R.string.alarm_info, activeCount, timeStr, extra)
         binding.alarmInfoCard.visibility = View.VISIBLE
     }
 
@@ -119,14 +129,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun formatWeekdays(days: Set<Int>): String {
         if (days.isEmpty()) return ""
+        val dfs = DateFormatSymbols(Locale.getDefault())
         val names = mapOf(
-            Calendar.MONDAY to "Пн",
-            Calendar.TUESDAY to "Вт",
-            Calendar.WEDNESDAY to "Ср",
-            Calendar.THURSDAY to "Чт",
-            Calendar.FRIDAY to "Пт",
-            Calendar.SATURDAY to "Сб",
-            Calendar.SUNDAY to "Вс"
+            Calendar.SUNDAY to dfs.shortWeekdays[Calendar.SUNDAY],
+            Calendar.MONDAY to dfs.shortWeekdays[Calendar.MONDAY],
+            Calendar.TUESDAY to dfs.shortWeekdays[Calendar.TUESDAY],
+            Calendar.WEDNESDAY to dfs.shortWeekdays[Calendar.WEDNESDAY],
+            Calendar.THURSDAY to dfs.shortWeekdays[Calendar.THURSDAY],
+            Calendar.FRIDAY to dfs.shortWeekdays[Calendar.FRIDAY],
+            Calendar.SATURDAY to dfs.shortWeekdays[Calendar.SATURDAY]
         )
         return days.sorted().joinToString(",") { names[it] ?: "" }
     }
@@ -171,12 +182,12 @@ class MainActivity : AppCompatActivity() {
             if (alarm.description.isNotBlank()) metaParts.add(alarm.description)
 
             tvTime.text = timeStr
-            tvMeta.text = if (metaParts.isEmpty()) "Без повторов" else metaParts.joinToString(" • ")
+            tvMeta.text = if (metaParts.isEmpty()) getString(R.string.alarm_meta_none) else metaParts.joinToString(" • ")
 
             switchEnabled.isChecked = alarm.enabled
-            switchEnabled.text = if (alarm.enabled) "Вкл" else "Выкл"
+            switchEnabled.text = if (alarm.enabled) getString(R.string.alarm_switch_on) else getString(R.string.alarm_switch_off)
             switchEnabled.setOnCheckedChangeListener { _, isChecked ->
-                switchEnabled.text = if (isChecked) "Вкл" else "Выкл"
+                switchEnabled.text = if (isChecked) getString(R.string.alarm_switch_on) else getString(R.string.alarm_switch_off)
                 updateAlarmEnabled(alarm, isChecked)
             }
 
@@ -239,7 +250,7 @@ class MainActivity : AppCompatActivity() {
             saveAlarms()
             renderAlarms()
             if (alarms.isEmpty()) hideAlarmInfo() else showAlarmInfo()
-            Toast.makeText(this, "Будильник удалён", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.alarm_deleted), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -279,6 +290,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSettingsPanel() {
+        val langByButton: Map<Int, String?> = mapOf(
+            binding.btnLangSystem.id to null,
+            binding.btnLangRu.id to "ru",
+            binding.btnLangEn.id to "en"
+        )
+
+        val savedLang = LocaleHelper.getSavedLanguage(this)
+        val initialButtonId = if (savedLang == null) {
+            binding.btnLangSystem.id
+        } else {
+            langByButton.entries.find { it.value == savedLang }?.key ?: binding.btnLangSystem.id
+        }
+        binding.mbtgLang.check(initialButtonId)
+
+        binding.mbtgLang.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            val selectedLang = langByButton[checkedId]
+            val currentSaved = LocaleHelper.getSavedLanguage(this)
+            if (selectedLang == currentSaved) return@addOnButtonCheckedListener
+
+            if (selectedLang == null) {
+                LocaleHelper.clearLanguage(this)
+            } else {
+                LocaleHelper.saveLanguage(this, selectedLang)
+            }
+            recreate()
+        }
+
         val mode = prefs.getInt("theme_mode", defaultThemeMode)
         when (mode) {
             AppCompatDelegate.MODE_NIGHT_NO -> binding.rbThemeLight.isChecked = true
@@ -300,7 +339,7 @@ class MainActivity : AppCompatActivity() {
         binding.switch24h.isChecked = is24h
         binding.switch24h.setOnCheckedChangeListener { _, checked ->
             prefs.edit().putBoolean("is24h", checked).apply()
-            Toast.makeText(this, if (checked) "24-часовой формат" else "12-часовой формат", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, if (checked) getString(R.string.time_format_24h_toast) else getString(R.string.time_format_12h_toast), Toast.LENGTH_SHORT).show()
         }
 
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START)

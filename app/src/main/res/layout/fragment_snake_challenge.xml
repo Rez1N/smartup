@@ -9,12 +9,16 @@
         android:id="@+id/tvSnakeInstruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Соберите 3 яблока" />
+        android:text="@string/snake_instruction"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp" />
 
     <com.frovexsoftware.smartup.SnakeBoardView
         android:id="@+id/snakeBoard"
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
         android:layout_marginTop="12dp"
         android:background="#111111" />
 
@@ -23,7 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Счёт: 0/3" />
+        android:text="@string/snake_score_initial"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +41,7 @@
             android:id="@+id/btnSnakeUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Вверх" />
+            android:text="@string/snake_up" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -49,7 +54,7 @@
                 android:id="@+id/btnSnakeLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Влево" />
+                android:text="@string/snake_left" />
 
             <Space
                 android:layout_width="16dp"
@@ -59,7 +64,7 @@
                 android:id="@+id/btnSnakeRight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Вправо" />
+                android:text="@string/snake_right" />
         </LinearLayout>
 
         <Button
@@ -67,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Вниз" />
+            android:text="@string/snake_down" />
 
     </LinearLayout>
 

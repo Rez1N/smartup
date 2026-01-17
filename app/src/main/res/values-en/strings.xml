@@ -9,6 +9,13 @@
     <string name="color_black">Black</string>
     <string name="color_white">White</string>
 
+    <string name="color_submit">Check</string>
+
+    <string name="date_challenge_hint">Enter todays date</string>
+    <string name="date_challenge_format">dd.MM.yyyy</string>
+    <string name="date_challenge_helper">Dots, slashes or spaces are ok</string>
+    <string name="date_submit">Check</string>
+
     <string name="dots_title">Pattern lock</string>
     <string name="dots_draw_instruction">Draw the pattern "%1$s"</string>
     <string name="dots_draw_instruction_placeholder">Draw the pattern</string>
@@ -24,4 +31,78 @@
     <string name="alarms_title">My alarms</string>
     <string name="alarms_empty">No alarms yet</string>
     <string name="alarms_add">Create alarm</string>
+
+    <string name="settings_language">Language</string>
+    <string name="lang_ru">Russian</string>
+    <string name="lang_en">English</string>
+    <string name="lang_system">System</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_time_format">Time format</string>
+    <string name="settings_time_format_24h">24-hour format</string>
+    <string name="settings_open_menu">Open menu</string>
+
+    <string name="alarm_added">Alarm added</string>
+    <string name="alarm_deleted">Alarm deleted</string>
+    <string name="alarm_switch_on">On</string>
+    <string name="alarm_switch_off">Off</string>
+    <string name="alarm_time_placeholder">07:00</string>
+    <string name="alarm_meta_none">No repeats</string>
+    <string name="alarm_info">Active: %1$d. Next: %2$s%3$s</string>
+    <string name="alarm_info_date"> (date: %1$s)</string>
+    <string name="alarm_info_weekdays"> (%1$s)</string>
+    <string name="time_format_24h_toast">24-hour format</string>
+    <string name="time_format_12h_toast">12-hour format</string>
+
+    <string name="edit_time_title">Alarm time</string>
+    <string name="edit_time_format_hint">24-hour format</string>
+    <string name="edit_description_hint">Label</string>
+    <string name="edit_challenge_title">Challenge</string>
+    <string name="edit_challenge_none">No challenge</string>
+    <string name="edit_challenge_choose">Choose challenge</string>
+    <string name="edit_date_title">Date &amp; repeat</string>
+    <string name="edit_select_date">Pick date</string>
+    <string name="edit_clear_date">No date</string>
+    <string name="edit_date_format">Date: %1$d.%2$d.%3$d</string>
+    <string name="edit_weekdays_title">Weekdays</string>
+    <string name="weekday_mon">Mon</string>
+    <string name="weekday_tue">Tue</string>
+    <string name="weekday_wed">Wed</string>
+    <string name="weekday_thu">Thu</string>
+    <string name="weekday_fri">Fri</string>
+    <string name="weekday_sat">Sat</string>
+    <string name="weekday_sun">Sun</string>
+    <string name="edit_enabled_label">Alarm enabled</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_delete">Delete alarm</string>
+
+    <string name="challenge_dialog_title">Challenge</string>
+    <string name="challenge_none">No challenge</string>
+    <string name="challenge_snake">Snake</string>
+    <string name="challenge_dots">Connect dots 4x4</string>
+    <string name="challenge_math">Math example</string>
+    <string name="challenge_date">Enter todays date</string>
+    <string name="challenge_color">Guess the color</string>
+    <string name="common_cancel">Cancel</string>
+
+    <string name="snake_instruction">Collect 5 apples</string>
+    <string name="snake_score">Apples: %1$d/5</string>
+    <string name="snake_score_initial">Apples: 0/5</string>
+    <string name="snake_up">Up</string>
+    <string name="snake_down">Down</string>
+    <string name="snake_left">Left</string>
+    <string name="snake_right">Right</string>
+
+    <string name="math_submit">Check</string>
+    <string name="math_question">%1$d + %2$d = ?</string>
+
+    <string name="alarm_ringing_toast">Alarm ringing!</string>
+    <string name="alarm_notification_title">Alarm</string>
+    <string name="alarm_notification_text">Tap to stop</string>
+    <string name="alarm_channel_name">Alarms</string>
+    <string name="alarm_channel_desc">Alarm notifications</string>
 </resources>

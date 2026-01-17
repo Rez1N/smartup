@@ -14,7 +14,7 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val ctx = context ?: return
 
-        Toast.makeText(ctx, "Будильник звонит!", Toast.LENGTH_LONG).show()
+        Toast.makeText(ctx, ctx.getString(R.string.alarm_ringing_toast), Toast.LENGTH_LONG).show()
 
         startVibration(ctx)
         AlarmPlayer.start(ctx)
