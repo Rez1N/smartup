@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.frovexsoftware.smartup.databinding.ActivityMainBinding
 import java.util.ArrayList
 import java.util.Calendar
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: SharedPreferences
+    private val defaultThemeMode = AppCompatDelegate.MODE_NIGHT_YES
     private val alarms = mutableListOf<AlarmData>()
 
     private val editAlarmLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -29,8 +31,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         prefs = getSharedPreferences("alarm_prefs", Context.MODE_PRIVATE)
         applySavedTheme(prefs)
+        setTheme(R.style.Theme_Smartup)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -269,12 +273,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applySavedTheme(prefs: SharedPreferences) {
-        val mode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val mode = prefs.getInt("theme_mode", defaultThemeMode)
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
     private fun setupSettingsPanel() {
-        val mode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val mode = prefs.getInt("theme_mode", defaultThemeMode)
         when (mode) {
             AppCompatDelegate.MODE_NIGHT_NO -> binding.rbThemeLight.isChecked = true
             AppCompatDelegate.MODE_NIGHT_YES -> binding.rbThemeDark.isChecked = true
