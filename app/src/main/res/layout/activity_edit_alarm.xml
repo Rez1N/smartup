@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:padding="18dp"
-    android:background="?android:attr/colorBackground"
+    android:background="@color/alarm_bg"
     tools:context=".EditAlarmActivity">
 
     <LinearLayout

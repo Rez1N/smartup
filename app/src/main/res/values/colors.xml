@@ -3,4 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="splash_background">#0A0B1A</color>
+    <color name="alarm_bg">#FFFFFF</color>
+    <color name="alarm_card">#FFFFFF</color>
+    <color name="alarm_divider">#E0E0E0</color>
+    <color name="alarm_text_primary">#121212</color>
+    <color name="alarm_text_secondary">#5C5C5C</color>
 </resources>

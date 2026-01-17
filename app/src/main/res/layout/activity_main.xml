@@ -5,12 +5,14 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/alarm_bg"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/screen_horizontal_margin">
+        android:padding="@dimen/screen_horizontal_margin"
+        android:background="@color/alarm_bg">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -19,6 +21,7 @@
             android:text="@string/alarms_title"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             android:textStyle="bold"
+            android:textColor="@color/alarm_text_primary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnSettings"
@@ -41,6 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:cardBackgroundColor="@color/alarm_card"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
@@ -55,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="@color/alarm_text_primary"
                 tools:text="Активных будильников: 2. Ближайший: 07:00" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -63,6 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fillViewport="true"
+            android:background="@color/alarm_bg"
             app:layout_constraintTop_toBottomOf="@id/alarmInfoCard"
             app:layout_constraintBottom_toTopOf="@+id/btnAddAlarm"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +88,7 @@
                     android:layout_marginTop="24dp"
                     android:text="@string/alarms_empty"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/alarm_text_secondary"
                     android:visibility="gone"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp" />
@@ -124,7 +130,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="?attr/colorSurface"
+        android:background="@color/alarm_card"
         android:layout_gravity="end"
         tools:ignore="UselessParent">
 
@@ -133,14 +139,16 @@
             android:layout_height="wrap_content"
             android:text="Настройки"
             android:textStyle="bold"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="@color/alarm_text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Тема"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/alarm_text_secondary" />
 
         <RadioGroup
             android:id="@+id/rgTheme"
@@ -153,19 +161,22 @@
                 android:id="@+id/rbThemeSystem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Как в системе" />
+                android:text="Как в системе"
+                android:textColor="@color/alarm_text_primary" />
 
             <RadioButton
                 android:id="@+id/rbThemeLight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Светлая" />
+                android:text="Светлая"
+                android:textColor="@color/alarm_text_primary" />
 
             <RadioButton
                 android:id="@+id/rbThemeDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Тёмная" />
+                android:text="Тёмная"
+                android:textColor="@color/alarm_text_primary" />
         </RadioGroup>
 
         <TextView
@@ -173,7 +184,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Формат времени"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/alarm_text_secondary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch24h"
