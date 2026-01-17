@@ -152,7 +152,8 @@ class MainActivity : AppCompatActivity() {
         val inflater = layoutInflater
         alarms.sortedBy { it.timeInMillis }.forEach { alarm ->
             val view = inflater.inflate(R.layout.item_alarm, binding.alarmsContainer, false)
-            val info = view.findViewById<android.widget.TextView>(R.id.tvAlarmInfo)
+            val tvTime = view.findViewById<android.widget.TextView>(R.id.tvAlarmTime)
+            val tvMeta = view.findViewById<android.widget.TextView>(R.id.tvAlarmMeta)
             val switchEnabled = view.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.switchAlarmEnabled)
 
             val cal = Calendar.getInstance().apply { timeInMillis = alarm.timeInMillis }
@@ -164,13 +165,13 @@ class MainActivity : AppCompatActivity() {
                 "${c.get(Calendar.DAY_OF_MONTH)}.${c.get(Calendar.MONTH) + 1}.${c.get(Calendar.YEAR)}"
             }
             val weekdaysStr = formatWeekdays(alarm.weekdays)
-            val extra = when {
-                dateStr != null -> " (дата: $dateStr)"
-                weekdaysStr.isNotEmpty() -> " ($weekdaysStr)"
-                else -> ""
-            }
-            val descSuffix = if (alarm.description.isNotBlank()) " — ${alarm.description}" else ""
-            info.text = "$timeStr$extra$descSuffix"
+            val metaParts = mutableListOf<String>()
+            if (dateStr != null) metaParts.add(dateStr)
+            if (weekdaysStr.isNotEmpty()) metaParts.add(weekdaysStr)
+            if (alarm.description.isNotBlank()) metaParts.add(alarm.description)
+
+            tvTime.text = timeStr
+            tvMeta.text = if (metaParts.isEmpty()) "Без повторов" else metaParts.joinToString(" • ")
 
             switchEnabled.isChecked = alarm.enabled
             switchEnabled.text = if (alarm.enabled) "Вкл" else "Выкл"

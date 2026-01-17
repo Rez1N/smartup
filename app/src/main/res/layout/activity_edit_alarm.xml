@@ -38,7 +38,8 @@
                     android:layout_height="wrap_content"
                     android:text="Время сигнала"
                     android:textStyle="bold"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textColor="@color/alarm_text_primary" />
 
                 <TimePicker
                     android:id="@+id/timePickerEdit"
@@ -54,12 +55,13 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="6dp"
                     android:text="24-часовой формат"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="@color/alarm_text_secondary" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Описание"
+                    android:hint="Название"
                     android:layout_marginTop="14dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -67,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapSentences"
-                        android:hint="Описание" />
+                        android:hint="Название" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -95,7 +97,8 @@
                     android:layout_height="wrap_content"
                     android:text="Челлендж"
                     android:textStyle="bold"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textColor="@color/alarm_text_primary" />
 
                 <TextView
                     android:id="@+id/tvChallengeValueEdit"
@@ -103,7 +106,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="Без челленджа"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/alarm_text_secondary" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnChooseChallengeEdit"
@@ -137,7 +141,8 @@
                     android:layout_height="wrap_content"
                     android:text="Дата и повтор"
                     android:textStyle="bold"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textColor="@color/alarm_text_primary" />
 
                 <LinearLayout
                     android:id="@+id/dateSelectorEdit"
@@ -169,7 +174,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Дни недели"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/alarm_text_primary" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupWeekdaysEdit"
@@ -229,7 +235,8 @@
                     android:layout_height="wrap_content"
                     android:text="Будильник активен"
                     app:useMaterialThemeColors="true"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/alarm_text_primary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
