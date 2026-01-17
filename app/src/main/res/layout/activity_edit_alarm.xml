@@ -5,269 +5,258 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/alarm_bg"
+    android:padding="18dp"
+    android:background="?android:attr/colorBackground"
     tools:context=".EditAlarmActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="24dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/topBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="4dp">
-
-            <TextView
-                android:id="@+id/btnCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Отменить"
-                android:textColor="@color/alarm_accent"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-            <TextView
-                android:id="@+id/tvScreenTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Добавить будильник"
-                android:textColor="@color/alarm_text_primary"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:id="@+id/btnSaveTop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Сохранить"
-                android:textColor="@color/alarm_accent"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp" />
+        android:gravity="center_horizontal"
+        android:paddingBottom="16dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/alarm_card"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp">
+            app:cardUseCompatPadding="true"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="#14000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginBottom="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingVertical="8dp"
-                android:gravity="center_horizontal">
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Время сигнала"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
 
                 <TimePicker
                     android:id="@+id/timePickerEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:timePickerMode="spinner"
-                    android:layout_marginTop="4dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    android:layout_marginTop="12dp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:text="24-часовой формат"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Описание"
+                    android:layout_marginTop="14dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:hint="Описание" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/listCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/alarm_card"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="2dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
+            app:strokeColor="#14000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginBottom="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="12dp">
 
-                <LinearLayout
-                    android:id="@+id/containerRepeat"
+                <TextView
+                    android:id="@+id/tvChallengeLabelEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Челлендж"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+
+                <TextView
+                    android:id="@+id/tvChallengeValueEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Без челленджа"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChooseChallengeEdit"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Повтор"
-                        android:textColor="@color/alarm_text_primary"
-                        android:textSize="16sp" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/tvRepeatValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Будние дни"
-                        android:textColor="@color/alarm_text_secondary"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/alarm_divider" />
-
-                <LinearLayout
-                    android:id="@+id/containerName"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Название"
-                        android:textColor="@color/alarm_text_primary"
-                        android:textSize="16sp" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/tvNameValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Будильник"
-                        android:textColor="@color/alarm_text_secondary"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/alarm_divider" />
-
-                <LinearLayout
-                    android:id="@+id/containerMelody"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Мелодия"
-                        android:textColor="@color/alarm_text_primary"
-                        android:textSize="16sp" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/tvMelodyValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Радиус"
-                        android:textColor="@color/alarm_text_secondary"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/alarm_divider" />
-
-                <LinearLayout
-                    android:id="@+id/containerRepeatSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Повторение сигнала"
-                        android:textColor="@color/alarm_text_primary"
-                        android:textSize="16sp" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchEnabledEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:useMaterialThemeColors="true"
-                        android:checked="true" />
-                </LinearLayout>
-
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Выбрать челлендж" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDeleteAlarm"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Удалить будильник"
-            android:textColor="@android:color/holo_red_light"
-            app:strokeColor="@android:color/holo_red_light"
-            android:layout_marginBottom="12dp" />
+            app:cardUseCompatPadding="true"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="#14000000"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginBottom="14dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSaveAlarm"
-            style="@style/Widget.MaterialComponents.Button"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Дата и повтор"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+
+                <LinearLayout
+                    android:id="@+id/dateSelectorEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectDateEdit"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Выбрать дату" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnClearDateEdit"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Без даты"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvWeekdaysLabelEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Дни недели"
+                    android:layout_marginTop="12dp" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupWeekdaysEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMonEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Пн" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTueEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Вт" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipWedEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ср" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipThuEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Чт" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFriEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Пт" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSatEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Сб" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSunEdit"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Вс" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchEnabledEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Будильник активен"
+                    app:useMaterialThemeColors="true"
+                    android:layout_marginTop="12dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Сохранить"
-            android:textAllCaps="false"
-            android:insetTop="10dp"
-            android:insetBottom="10dp" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveAlarm"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Сохранить" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteAlarm"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Удалить будильник"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_marginTop="10dp"
+                app:strokeColor="@android:color/holo_red_light" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -1,63 +1,63 @@
 package com.frovexsoftware.smartup
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.widget.Button
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.switchmaterial.SwitchMaterial
-import java.util.ArrayList
 import java.util.Calendar
-import java.util.LinkedHashSet
+import java.util.ArrayList
 
 class EditAlarmActivity : AppCompatActivity() {
 
     private var selectedDateMillis: Long? = null
     private var isNew: Boolean = false
     private lateinit var timePicker: TimePicker
+    private lateinit var descriptionField: EditText
     private lateinit var switchEnabled: SwitchMaterial
-    private lateinit var tvRepeatValue: TextView
-    private lateinit var tvNameValue: TextView
-    private lateinit var tvMelodyValue: TextView
-    private var selectedWeekdays: MutableSet<Int> = LinkedHashSet()
-    private var descriptionText: String = "Будильник"
+    private lateinit var chipGroup: ChipGroup
+    private lateinit var weekdayChips: Map<Chip, Int>
+    private lateinit var challengeValue: TextView
+    private var selectedChallengeType: ChallengeType = ChallengeType.NONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_alarm)
 
         timePicker = findViewById(R.id.timePickerEdit)
+        descriptionField = findViewById(R.id.etDescription)
         switchEnabled = findViewById(R.id.switchEnabledEdit)
-        tvRepeatValue = findViewById(R.id.tvRepeatValue)
-        tvNameValue = findViewById(R.id.tvNameValue)
-        tvMelodyValue = findViewById(R.id.tvMelodyValue)
+        chipGroup = findViewById(R.id.chipGroupWeekdaysEdit)
+        challengeValue = findViewById(R.id.tvChallengeValueEdit)
         isNew = intent.getIntExtra("alarm_id", -1) == -1
 
-        bindInitialData()
-        bindUi()
-    }
+        weekdayChips = mapOf(
+            findViewById<Chip>(R.id.chipMonEdit) to Calendar.MONDAY,
+            findViewById<Chip>(R.id.chipTueEdit) to Calendar.TUESDAY,
+            findViewById<Chip>(R.id.chipWedEdit) to Calendar.WEDNESDAY,
+            findViewById<Chip>(R.id.chipThuEdit) to Calendar.THURSDAY,
+            findViewById<Chip>(R.id.chipFriEdit) to Calendar.FRIDAY,
+            findViewById<Chip>(R.id.chipSatEdit) to Calendar.SATURDAY,
+            findViewById<Chip>(R.id.chipSunEdit) to Calendar.SUNDAY
+        )
 
-    private fun bindUi() {
-        findViewById<View>(R.id.btnCancel).setOnClickListener { finish() }
-        findViewById<View>(R.id.btnSaveTop).setOnClickListener { onSave() }
-        findViewById<View>(R.id.btnSaveAlarm).setOnClickListener { onSave() }
-        findViewById<View>(R.id.btnDeleteAlarm).apply {
+        bindInitialData()
+        setupDateButtons()
+        findViewById<Button>(R.id.btnChooseChallengeEdit).setOnClickListener { openChallengeDialog() }
+        findViewById<Button>(R.id.btnSaveAlarm).setOnClickListener { onSave() }
+        findViewById<Button>(R.id.btnDeleteAlarm).apply {
             visibility = if (isNew) View.GONE else View.VISIBLE
             setOnClickListener { onDelete() }
         }
-
-        findViewById<View>(R.id.containerRepeat).setOnClickListener { openRepeatDialog() }
-        findViewById<View>(R.id.containerName).setOnClickListener { openNameDialog() }
-        findViewById<View>(R.id.containerMelody).setOnClickListener {
-            Toast.makeText(this, "Выбор мелодии пока недоступен", Toast.LENGTH_SHORT).show()
-        }
-
-        updateRepeatValue()
-        tvNameValue.text = descriptionText
     }
 
     private fun bindInitialData() {
@@ -69,77 +69,65 @@ class EditAlarmActivity : AppCompatActivity() {
         timePicker.hour = cal.get(Calendar.HOUR_OF_DAY)
         timePicker.minute = cal.get(Calendar.MINUTE)
 
-        descriptionText = intent.getStringExtra("description")?.takeIf { it.isNotBlank() } ?: "Будильник"
+        descriptionField.setText(intent.getStringExtra("description") ?: "")
 
         selectedDateMillis = intent.getLongExtra("date", -1L).let { if (it == -1L) null else it }
-        intent.getIntegerArrayListExtra("weekdays")?.let { selectedWeekdays.addAll(it.toSet()) }
+        intent.getIntegerArrayListExtra("weekdays")?.toSet()?.let { setWeekdaysChecked(it) }
+
+        selectedChallengeType = ChallengeType.from(intent.getStringExtra("challenge_type")) ?: ChallengeType.NONE
+        updateChallengeValue()
 
         switchEnabled.isChecked = intent.getBooleanExtra("enabled", true)
-        tvMelodyValue.text = "Радиус"
     }
 
-    private fun openRepeatDialog() {
-        val names = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
-        val values = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY,
-            Calendar.SATURDAY,
-            Calendar.SUNDAY
-        )
-        val checked = values.map { selectedWeekdays.contains(it) }.toBooleanArray()
+    private fun setupDateButtons() {
+        val btnSelect = findViewById<Button>(R.id.btnSelectDateEdit)
+        val btnClear = findViewById<Button>(R.id.btnClearDateEdit)
 
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Повтор")
-            .setMultiChoiceItems(names.toTypedArray(), checked) { _, which, isChecked ->
-                val day = values[which]
-                if (isChecked) selectedWeekdays.add(day) else selectedWeekdays.remove(day)
-            }
-            .setPositiveButton("Готово") { _, _ -> updateRepeatValue() }
-            .setNegativeButton("Отмена", null)
-            .show()
-    }
-
-    private fun openNameDialog() {
-        val input = EditText(this).apply {
-            setText(descriptionText)
-            setSelection(text.length)
+        btnSelect.setOnClickListener { openDatePicker() }
+        btnClear.setOnClickListener {
+            selectedDateMillis = null
+            btnSelect.text = "Выбрать дату"
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Название")
-            .setView(input)
-            .setPositiveButton("Сохранить") { _, _ ->
-                descriptionText = input.text.toString().ifBlank { "Будильник" }
-                tvNameValue.text = descriptionText
+
+        selectedDateMillis?.let { updateDateButtonText(btnSelect, it) }
+    }
+
+    private fun openDatePicker() {
+        val btnSelect = findViewById<Button>(R.id.btnSelectDateEdit)
+        val now = Calendar.getInstance()
+        val dialog = DatePickerDialog(this, { _: DatePicker, y: Int, m: Int, d: Int ->
+            val cal = Calendar.getInstance().apply {
+                set(Calendar.YEAR, y)
+                set(Calendar.MONTH, m)
+                set(Calendar.DAY_OF_MONTH, d)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
             }
-            .setNegativeButton("Отмена", null)
-            .show()
+            selectedDateMillis = cal.timeInMillis
+            updateDateButtonText(btnSelect, cal.timeInMillis)
+        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
+        dialog.datePicker.minDate = now.timeInMillis
+        dialog.show()
     }
 
-    private fun updateRepeatValue() {
-        val label = when {
-            selectedWeekdays.isEmpty() -> "Никогда"
-            selectedWeekdays.containsAll(listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY)) && selectedWeekdays.size == 5 -> "Будние дни"
-            selectedWeekdays.size == 7 -> "Каждый день"
-            else -> selectedWeekdays.sorted().joinToString(" ") { dayToShort(it) }
-        }
-        tvRepeatValue.text = label
+    private fun updateDateButtonText(button: Button, millis: Long) {
+        val cal = Calendar.getInstance().apply { timeInMillis = millis }
+        button.text = "Дата: ${cal.get(Calendar.DAY_OF_MONTH)}.${cal.get(Calendar.MONTH) + 1}.${cal.get(Calendar.YEAR)}"
     }
 
-    private fun dayToShort(day: Int): String = when (day) {
-        Calendar.MONDAY -> "Пн"
-        Calendar.TUESDAY -> "Вт"
-        Calendar.WEDNESDAY -> "Ср"
-        Calendar.THURSDAY -> "Чт"
-        Calendar.FRIDAY -> "Пт"
-        Calendar.SATURDAY -> "Сб"
-        Calendar.SUNDAY -> "Вс"
-        else -> ""
+    private fun getSelectedWeekdays(): Set<Int> {
+        return weekdayChips.filter { (chip, _) -> chip.isChecked }.values.toSet()
+    }
+
+    private fun setWeekdaysChecked(days: Set<Int>) {
+        weekdayChips.forEach { (chip, day) -> chip.isChecked = days.contains(day) }
     }
 
     private fun onSave() {
+        val selectedWeekdays = getSelectedWeekdays()
         val triggerCal = TimeLogic.calculateNextTrigger(
             timePicker.hour,
             timePicker.minute,
@@ -152,12 +140,46 @@ class EditAlarmActivity : AppCompatActivity() {
             putExtra("time", triggerCal.timeInMillis)
             putExtra("date", selectedDateMillis ?: -1L)
             putExtra("enabled", switchEnabled.isChecked)
-            putExtra("description", descriptionText)
+            putExtra("description", descriptionField.text.toString())
             putIntegerArrayListExtra("weekdays", ArrayList(selectedWeekdays))
-            putExtra("challenge_type", ChallengeType.NONE.name)
+            putExtra("challenge_type", selectedChallengeType.name)
         }
         setResult(RESULT_OK, result)
         finish()
+    }
+
+    private fun openChallengeDialog() {
+        val entries = listOf(
+            "Без челленджа" to ChallengeType.NONE,
+            "Змейка" to ChallengeType.SNAKE,
+            "Соединить точки 4x4" to ChallengeType.DOTS,
+            "Математический пример" to ChallengeType.MATH,
+            "Написать сегодняшнюю дату" to ChallengeType.DATE,
+            "Угадать цвет" to ChallengeType.COLOR
+        )
+        val currentIndex = entries.indexOfFirst { it.second == selectedChallengeType }.coerceAtLeast(0)
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Челлендж")
+            .setSingleChoiceItems(entries.map { it.first }.toTypedArray(), currentIndex) { dialog, which ->
+                selectedChallengeType = entries[which].second
+                updateChallengeValue()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun updateChallengeValue() {
+        val text = when (selectedChallengeType) {
+            ChallengeType.NONE -> "Без челленджа"
+            ChallengeType.SNAKE -> "Змейка"
+            ChallengeType.DOTS -> "Соединить точки 4x4"
+            ChallengeType.MATH -> "Математический пример"
+            ChallengeType.DATE -> "Написать сегодняшнюю дату"
+            ChallengeType.COLOR -> "Угадать цвет"
+            else -> "Без челленджа"
+        }
+        challengeValue.text = text
     }
 
     private fun onDelete() {
