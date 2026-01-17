@@ -8,4 +8,16 @@
     <string name="color_yellow">Желтый</string>
     <string name="color_black">Черный</string>
     <string name="color_white">Белый</string>
+
+    <string name="dots_title">Графический узор</string>
+    <string name="dots_draw_instruction">Нарисуйте узор «%1$s»</string>
+    <string name="dots_draw_instruction_placeholder">Нарисуйте узор</string>
+    <string name="dots_new_pattern">Новый узор</string>
+    <string name="dots_reset_pattern">Сбросить</string>
+    <string name="dots_progress">Выбрано: %1$d/%2$d</string>
+    <string name="dots_progress_placeholder">Выбрано: 0/0</string>
+    <string name="dots_wrong_pattern">Неверный узор, попробуйте снова</string>
+    <string name="dots_pattern_complete">Узор совпал!</string>
+    <string name="dots_pattern_name">Узор: %1$s</string>
+    <string name="dots_pattern_name_placeholder">Узор: ?</string>
 </resources>

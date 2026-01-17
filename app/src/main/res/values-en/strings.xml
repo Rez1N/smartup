@@ -8,4 +8,16 @@
     <string name="color_yellow">Yellow</string>
     <string name="color_black">Black</string>
     <string name="color_white">White</string>
+
+    <string name="dots_title">Pattern lock</string>
+    <string name="dots_draw_instruction">Draw the pattern "%1$s"</string>
+    <string name="dots_draw_instruction_placeholder">Draw the pattern</string>
+    <string name="dots_new_pattern">New pattern</string>
+    <string name="dots_reset_pattern">Reset</string>
+    <string name="dots_progress">Selected: %1$d/%2$d</string>
+    <string name="dots_progress_placeholder">Selected: 0/0</string>
+    <string name="dots_wrong_pattern">Wrong pattern, try again</string>
+    <string name="dots_pattern_complete">Pattern matched!</string>
+    <string name="dots_pattern_name">Pattern: %1$s</string>
+    <string name="dots_pattern_name_placeholder">Pattern: ?</string>
 </resources>

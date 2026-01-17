@@ -29,7 +29,7 @@
 
         <activity
             android:name=".StopAlarmActivity"
-            android:exported="false"
+            android:exported="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
 
