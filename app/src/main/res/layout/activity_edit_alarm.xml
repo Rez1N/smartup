@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:fillViewport="true"
+    tools:context=".EditAlarmActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TimePicker
+            android:id="@+id/timePickerEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Описание"
+            android:inputType="textCapSentences"
+            app:layout_constraintTop_toBottomOf="@id/timePickerEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/tvChallengeLabelEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Челлендж перед отключением"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/etDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/rgChallengeTypeEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tvChallengeLabelEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <RadioButton
+                android:id="@+id/rbChallengeNoneEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Без челленджа" />
+
+            <RadioButton
+                android:id="@+id/rbChallengeSnakeEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Змейка" />
+
+            <RadioButton
+                android:id="@+id/rbChallengeDotsEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Соединить точки 4x4" />
+
+            <RadioButton
+                android:id="@+id/rbChallengeMathEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Математический пример" />
+
+            <RadioButton
+                android:id="@+id/rbChallengeDateEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Написать сегодняшнюю дату" />
+
+            <RadioButton
+                android:id="@+id/rbChallengeColorEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Угадать цвет" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/dateSelectorEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/rgChallengeTypeEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <Button
+                android:id="@+id/btnSelectDateEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выбрать дату" />
+
+            <Button
+                android:id="@+id/btnClearDateEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Без даты"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvWeekdaysLabelEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Дни недели"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/dateSelectorEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupWeekdaysEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:singleSelection="false"
+            app:layout_constraintTop_toBottomOf="@id/tvWeekdaysLabelEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMonEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Пн" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTueEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вт" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWedEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ср" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipThuEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Чт" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFriEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Пт" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSatEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Сб" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSunEdit"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вс" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchEnabledEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Включен"
+            app:useMaterialThemeColors="true"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/chipGroupWeekdaysEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnSaveAlarm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Сохранить"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/switchEnabledEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnDeleteAlarm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Удалить будильник"
+            android:layout_marginTop="12dp"
+            android:textColor="@android:color/holo_red_dark"
+            app:layout_constraintTop_toBottomOf="@id/btnSaveAlarm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

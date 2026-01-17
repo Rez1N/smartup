@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tvSnakeInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Соберите 3 яблока" />
+
+    <com.frovexsoftware.smartup.SnakeBoardView
+        android:id="@+id/snakeBoard"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginTop="12dp"
+        android:background="#111111" />
+
+    <TextView
+        android:id="@+id/tvSnakeScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Счёт: 0/3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnSnakeUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вверх" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="4dp">
+
+            <Button
+                android:id="@+id/btnSnakeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Влево" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="16dp" />
+
+            <Button
+                android:id="@+id/btnSnakeRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вправо" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSnakeDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Вниз" />
+
+    </LinearLayout>
+
+</LinearLayout>

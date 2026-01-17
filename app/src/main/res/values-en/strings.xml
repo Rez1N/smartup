@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">smartup</string>
+
+    <string name="color_challenge_hint">Enter the color name</string>
+    <string name="color_red">Red</string>
+    <string name="color_green">Green</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_black">Black</string>
+    <string name="color_white">White</string>
+</resources>
