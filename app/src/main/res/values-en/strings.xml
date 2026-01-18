@@ -133,4 +133,13 @@
     <string name="settings_open_menu">Settings</string>
 
     <string name="edit_create_button">Add alarm</string>
+
+    <string name="ai_agent_open">Open AI agent</string>
+    <string name="ai_agent_title">AI assistant</string>
+    <string name="ai_agent_subtitle">Ask anything about the app and your alarms</string>
+    <string name="ai_agent_card_title">Coming soon</string>
+    <string name="ai_agent_card_body">Here will be an AI assistant to help you set up alarms, routines, and challenges.</string>
+    <string name="ai_agent_input_hint">Ask the assistant</string>
+    <string name="ai_agent_start">Start chat</string>
+    <string name="ai_agent_back">Back</string>
 </resources>

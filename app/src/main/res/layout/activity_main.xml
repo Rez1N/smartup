@@ -43,12 +43,25 @@
             android:id="@+id/btnSettings"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_sort_by_size"
             android:contentDescription="@string/settings_title"
             android:visibility="visible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnAiAgent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_ai_robot"
+            android:tint="@color/purple_dark"
+            android:contentDescription="@string/ai_agent_open"
+            app:layout_constraintTop_toTopOf="@id/btnSettings"
+            app:layout_constraintBottom_toBottomOf="@id/btnSettings"
+            app:layout_constraintEnd_toStartOf="@id/btnSettings"
+            android:layout_marginEnd="@dimen/spacing_s" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/alarmInfoCard"

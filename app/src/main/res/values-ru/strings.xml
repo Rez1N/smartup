@@ -133,4 +133,13 @@
     <string name="settings_open_menu">Настройки</string>
 
     <string name="edit_create_button">Добавить будильник</string>
+
+    <string name="ai_agent_open">Открыть ИИ-агента</string>
+    <string name="ai_agent_title">ИИ-ассистент</string>
+    <string name="ai_agent_subtitle">Спроси о приложении и своих будильниках</string>
+    <string name="ai_agent_card_title">Скоро будет доступно</string>
+    <string name="ai_agent_card_body">Здесь появится ИИ-ассистент, который поможет настроить будильники, ритуалы и челленджи.</string>
+    <string name="ai_agent_input_hint">Спроси ассистента</string>
+    <string name="ai_agent_start">Начать чат</string>
+    <string name="ai_agent_back">Назад</string>
 </resources>

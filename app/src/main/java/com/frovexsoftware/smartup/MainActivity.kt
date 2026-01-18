@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         setupSettingsPanel()
         binding.btnSettings.setOnClickListener { binding.drawerLayout.openDrawer(Gravity.END) }
+        binding.btnAiAgent.setOnClickListener { openAiAgent() }
         binding.btnAddAlarm.setOnClickListener { openCreateAlarm() }
 
         loadAlarms()
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         binding.tvEmptyState.text = getString(R.string.alarms_empty)
         // Settings button content description
         binding.btnSettings.contentDescription = getString(R.string.settings_title)
+        binding.btnAiAgent.contentDescription = getString(R.string.ai_agent_open)
 
         val currentLocale = resources.configuration.locales[0].language
         binding.btnAddAlarm.text = if (currentLocale == "ru") {
@@ -78,6 +80,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             getString(R.string.alarms_add)
         }
+    }
+
+    private fun openAiAgent() {
+        startActivity(Intent(this, AiAgentActivity::class.java))
     }
 
     private fun scheduleAlarm(item: AlarmData) {

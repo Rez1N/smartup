@@ -39,6 +39,10 @@
             android:name=".EditAlarmActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".AiAgentActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".AlarmReceiver"
             android:exported="false" />
