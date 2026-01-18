@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import java.text.DateFormatSymbols
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -395,6 +399,7 @@ class MainActivity : AppCompatActivity() {
         binding.switch24h.setOnCheckedChangeListener { _, checked ->
             prefs.edit().putBoolean("is24h", checked).apply()
             Toast.makeText(this, if (checked) getString(R.string.time_format_24h_toast) else getString(R.string.time_format_12h_toast), Toast.LENGTH_SHORT).show()
+            renderAlarms()
         }
 
         val useSpinner = prefs.getBoolean("time_picker_spinner", false)
@@ -407,14 +412,21 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START)
     }
 
-    private fun formatTime(hour24: Int, minute: Int): String {
+    private fun formatTime(hour24: Int, minute: Int): CharSequence {
         val is24 = prefs.getBoolean("is24h", true)
         return if (is24) {
             "%02d:%02d".format(hour24, minute)
         } else {
             val hour12 = ((hour24 + 11) % 12) + 1
-            val suffix = if (hour24 >= 12) "PM" else "AM"
-            "%d:%02d %s".format(hour12, minute, suffix)
+            val suffix = if (hour24 >= 12) getString(R.string.time_pm) else getString(R.string.time_am)
+            val text = "%d:%02d %s".format(hour12, minute, suffix)
+            val spannable = SpannableString(text)
+            val suffixStart = text.lastIndexOf(' ') + 1
+            if (suffixStart in 1 until text.length) {
+                spannable.setSpan(RelativeSizeSpan(0.7f), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(getColor(R.color.purple_medium)), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            spannable
         }
     }
 }

@@ -126,6 +126,8 @@
     <string name="time_picker_style_label">Time input style</string>
     <string name="time_picker_style_spinner">Spinner</string>
     <string name="settings_time_format_24h">24-hour format</string>
+    <string name="time_am">AM</string>
+    <string name="time_pm">PM</string>
     <string name="settings_language">Language</string>
     <string name="lang_system">System</string>
     <string name="lang_ru">Russian</string>

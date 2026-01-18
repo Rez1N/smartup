@@ -6,6 +6,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
@@ -68,6 +72,7 @@ class EditAlarmActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateLocalizedTexts()
+        updateTimeDisplay()
     }
 
     private fun updateLocalizedTexts() {
@@ -400,6 +405,7 @@ class EditAlarmActivity : AppCompatActivity() {
 
     private fun openTimePicker() {
         val useSpinner = prefs.getBoolean("time_picker_spinner", false)
+        val is24h = prefs.getBoolean("is24h", true)
         
         if (useSpinner) {
             // Dialog with spinners
@@ -409,9 +415,15 @@ class EditAlarmActivity : AppCompatActivity() {
             }
             
             val hourPicker = NumberPicker(this).apply {
-                minValue = 0
-                maxValue = 23
-                value = selectedHour
+                if (is24h) {
+                    minValue = 0
+                    maxValue = 23
+                    value = selectedHour
+                } else {
+                    minValue = 1
+                    maxValue = 12
+                    value = ((selectedHour + 11) % 12) + 1
+                }
             }
             val minPicker = NumberPicker(this).apply {
                 minValue = 0
@@ -421,11 +433,33 @@ class EditAlarmActivity : AppCompatActivity() {
             
             layout.addView(hourPicker)
             layout.addView(minPicker)
+
+            val amPmPicker = if (!is24h) {
+                NumberPicker(this).apply {
+                    minValue = 0
+                    maxValue = 1
+                    displayedValues = arrayOf(getString(R.string.time_am), getString(R.string.time_pm))
+                    value = if (selectedHour >= 12) 1 else 0
+                }
+            } else {
+                null
+            }
+            amPmPicker?.let { layout.addView(it) }
             
             builder.setView(layout)
                 .setPositiveButton("OK") { _, _ ->
-                    selectedHour = hourPicker.value
                     selectedMinute = minPicker.value
+                    if (is24h) {
+                        selectedHour = hourPicker.value
+                    } else {
+                        val hour12 = hourPicker.value
+                        val isPm = (amPmPicker?.value ?: 0) == 1
+                        selectedHour = if (isPm) {
+                            if (hour12 == 12) 12 else hour12 + 12
+                        } else {
+                            if (hour12 == 12) 0 else hour12
+                        }
+                    }
                     updateTimeDisplay()
                 }
                 .show()
@@ -440,14 +474,32 @@ class EditAlarmActivity : AppCompatActivity() {
                 },
                 selectedHour,
                 selectedMinute,
-                prefs.getBoolean("is24h", true)
+                is24h
             )
             dialog.show()
         }
     }
 
     private fun updateTimeDisplay() {
-        tvTimeBig.text = String.format("%02d:%02d", selectedHour, selectedMinute)
+        tvTimeBig.text = formatTime(selectedHour, selectedMinute)
+    }
+
+    private fun formatTime(hour24: Int, minute: Int): CharSequence {
+        val is24 = prefs.getBoolean("is24h", true)
+        return if (is24) {
+            "%02d:%02d".format(hour24, minute)
+        } else {
+            val hour12 = ((hour24 + 11) % 12) + 1
+            val suffix = if (hour24 >= 12) getString(R.string.time_pm) else getString(R.string.time_am)
+            val text = "%d:%02d %s".format(hour12, minute, suffix)
+            val spannable = SpannableString(text)
+            val suffixStart = text.lastIndexOf(' ') + 1
+            if (suffixStart in 1 until text.length) {
+                spannable.setSpan(RelativeSizeSpan(0.7f), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(getColor(R.color.purple_medium)), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            spannable
+        }
     }
 
     private fun loadAlarmData() {
