@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvDayChip"
+    android:layout_width="32dp"
+    android:layout_height="28dp"
+    android:background="@drawable/bg_day_inactive"
+    android:gravity="center"
+    android:text="Пн"
+    android:textColor="#6A6A6A"
+    android:textSize="12sp"
+    android:layout_marginEnd="6dp" />

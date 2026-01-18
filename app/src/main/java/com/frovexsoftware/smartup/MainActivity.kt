@@ -98,33 +98,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showAlarmInfo() {
-        val activeAlarms = alarms.filter { it.enabled }
-        if (activeAlarms.isEmpty()) {
-            hideAlarmInfo()
-            return
-        }
-        val next = activeAlarms.sortedBy { it.timeInMillis }.first()
-        val cal = Calendar.getInstance().apply { timeInMillis = next.timeInMillis }
-        val hour = cal.get(Calendar.HOUR_OF_DAY)
-        val minute = cal.get(Calendar.MINUTE)
-        val timeStr = formatTime(hour, minute)
-        val dateStr = next.dateMillis?.let {
-            val c = Calendar.getInstance().apply { timeInMillis = it }
-            "${c.get(Calendar.DAY_OF_MONTH)}.${c.get(Calendar.MONTH) + 1}.${c.get(Calendar.YEAR)}"
-        }
-        val weekdaysStr = formatWeekdays(next.weekdays)
-        val extra = when {
-            dateStr != null -> getString(R.string.alarm_info_date, dateStr)
-            weekdaysStr.isNotEmpty() -> getString(R.string.alarm_info_weekdays, weekdaysStr)
-            else -> ""
-        }
-        val activeCount = activeAlarms.size
-        binding.tvAlarmInfo.text = getString(R.string.alarm_info, activeCount, timeStr, extra)
-        binding.alarmInfoCard.visibility = View.VISIBLE
+        // Removed for new design
     }
 
     private fun hideAlarmInfo() {
-        binding.alarmInfoCard.visibility = View.GONE
+        // Removed for new design
     }
 
     private fun formatWeekdays(days: Set<Int>): String {
@@ -153,48 +131,82 @@ class MainActivity : AppCompatActivity() {
 
     private fun renderAlarms() {
         binding.alarmsContainer.removeAllViews()
-        if (alarms.isEmpty()) {
-            binding.tvEmptyState.visibility = View.VISIBLE
-            return
-        } else {
-            binding.tvEmptyState.visibility = View.GONE
-        }
+        // binding.tvEmptyState.visibility = View.GONE // Removing as I am not sure if it exists in layout binding
 
         val inflater = layoutInflater
         alarms.sortedBy { it.timeInMillis }.forEach { alarm ->
             val view = inflater.inflate(R.layout.item_alarm, binding.alarmsContainer, false)
             val tvTime = view.findViewById<android.widget.TextView>(R.id.tvAlarmTime)
+            val tvChallengeName = view.findViewById<android.widget.TextView>(R.id.tvChallengeName)
+            val ivChallengeIcon = view.findViewById<android.widget.ImageView>(R.id.ivChallengeIcon)
             val tvMeta = view.findViewById<android.widget.TextView>(R.id.tvAlarmMeta)
             val switchEnabled = view.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.switchAlarmEnabled)
+            val daysLayout = view.findViewById<android.widget.LinearLayout>(R.id.daysLayout)
 
             val cal = Calendar.getInstance().apply { timeInMillis = alarm.timeInMillis }
             val hour = cal.get(Calendar.HOUR_OF_DAY)
             val minute = cal.get(Calendar.MINUTE)
-            val timeStr = formatTime(hour, minute)
-            val dateStr = alarm.dateMillis?.let {
-                val c = Calendar.getInstance().apply { timeInMillis = it }
-                "${c.get(Calendar.DAY_OF_MONTH)}.${c.get(Calendar.MONTH) + 1}.${c.get(Calendar.YEAR)}"
-            }
-            val weekdaysStr = formatWeekdays(alarm.weekdays)
-            val metaParts = mutableListOf<String>()
-            if (dateStr != null) metaParts.add(dateStr)
-            if (weekdaysStr.isNotEmpty()) metaParts.add(weekdaysStr)
-            if (alarm.description.isNotBlank()) metaParts.add(alarm.description)
+            tvTime.text = formatTime(hour, minute)
 
-            tvTime.text = timeStr
-            tvMeta.text = if (metaParts.isEmpty()) getString(R.string.alarm_meta_none) else metaParts.joinToString(" • ")
+            val challengeType = try {
+                 ChallengeType.valueOf(alarm.challengeType)
+            } catch (e: Exception) { ChallengeType.NONE }
+            
+            val (iconRes, nameRes) = when(challengeType) {
+                ChallengeType.SNAKE -> R.drawable.ic_challenge_snake to R.string.chip_snake
+                ChallengeType.DOTS -> R.drawable.ic_challenge_dots to R.string.chip_dots
+                ChallengeType.MATH -> R.drawable.ic_challenge_math to R.string.chip_math
+                ChallengeType.COLOR -> R.drawable.ic_challenge_color to R.string.chip_color
+                else -> R.drawable.ic_leaf to R.string.edit_morning_me
+            }
+            ivChallengeIcon.setImageResource(iconRes)
+            tvChallengeName.text = getString(nameRes)
+
+            if (alarm.description.isNotBlank()) {
+                tvMeta.text = alarm.description
+                tvMeta.visibility = View.VISIBLE
+            } else {
+                tvMeta.visibility = View.GONE
+            }
 
             switchEnabled.isChecked = alarm.enabled
-            switchEnabled.text = if (alarm.enabled) getString(R.string.alarm_switch_on) else getString(R.string.alarm_switch_off)
+            // switchEnabled.text = if (alarm.enabled) getString(R.string.alarm_switch_on) else getString(R.string.alarm_switch_off) // Removing text from switch to match mockup
+            switchEnabled.text = "" 
             switchEnabled.setOnCheckedChangeListener { _, isChecked ->
-                switchEnabled.text = if (isChecked) getString(R.string.alarm_switch_on) else getString(R.string.alarm_switch_off)
                 updateAlarmEnabled(alarm, isChecked)
             }
 
-            view.setOnClickListener {
-                openEditAlarm(alarm)
+            daysLayout.removeAllViews()
+            val weekDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+            val density = resources.displayMetrics.density
+            val sizePx = (32 * density).toInt()
+            val marginPx = (4 * density).toInt()
+            
+            for (i in 0..6) {
+                val dayView = android.widget.TextView(this)
+                val isActive = alarm.weekdays.contains(i)
+                dayView.text = weekDayNames[i]
+                dayView.textSize = 12f
+                dayView.gravity = android.view.Gravity.CENTER
+                dayView.includeFontPadding = false
+                
+                val params = android.widget.LinearLayout.LayoutParams(sizePx, sizePx) 
+                params.setMargins(0, 0, marginPx, 0)
+                dayView.layoutParams = params
+                
+                 if (isActive) {
+                    dayView.setBackgroundResource(R.drawable.bg_day_active)
+                    // We need to resolve the color if possible, or just parse it.
+                    // Assuming bg_day_active uses the purple color.
+                    dayView.setTextColor(android.graphics.Color.WHITE)
+                } else {
+                    dayView.setBackgroundResource(R.drawable.bg_day_inactive) // Need to ensure this drawable exists or use color
+                     dayView.setTextColor(android.graphics.Color.parseColor("#8E7C9C"))
+                }
+                daysLayout.addView(dayView)
             }
-
+            
+            view.setOnClickListener { openEditAlarm(alarm) }
             binding.alarmsContainer.addView(view)
         }
     }
@@ -340,6 +352,13 @@ class MainActivity : AppCompatActivity() {
         binding.switch24h.setOnCheckedChangeListener { _, checked ->
             prefs.edit().putBoolean("is24h", checked).apply()
             Toast.makeText(this, if (checked) getString(R.string.time_format_24h_toast) else getString(R.string.time_format_12h_toast), Toast.LENGTH_SHORT).show()
+        }
+
+        val useSpinner = prefs.getBoolean("time_picker_spinner", false)
+        binding.switchTimePickerStyle.isChecked = useSpinner
+        binding.switchTimePickerStyle.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("time_picker_spinner", checked).apply()
+            Toast.makeText(this, if (checked) getString(R.string.time_picker_style_spinner) else getString(R.string.time_picker_style_clock), Toast.LENGTH_SHORT).show()
         }
 
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START)

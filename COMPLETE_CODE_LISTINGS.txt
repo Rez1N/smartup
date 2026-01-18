@@ -1,0 +1,328 @@
+================================================================================
+COMPLETE CODE: EditAlarmActivity.kt
+================================================================================
+
+package com.frovexsoftware.smartup
+
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.widget.DatePicker
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.NumberPicker
+import android.widget.TextView
+import android.widget.TimePicker
+import android.view.View
+import android.view.ViewGroup
+import android.content.res.ColorStateList
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
+import java.util.Calendar
+import java.util.ArrayList
+
+class EditAlarmActivity : AppCompatActivity() {
+
+    private var selectedDateMillis: Long? = null
+    private var isNew: Boolean = false
+    private var alarmId: Int = -1
+    private var selectedHour: Int = 7
+    private var selectedMinute: Int = 0
+    
+    private lateinit var tvTimeBig: TextView
+    private lateinit var timeContainer: FrameLayout
+    private lateinit var descriptionField: EditText
+    private lateinit var switchCare: SwitchMaterial
+    private lateinit var tvCareLabel: TextView
+    private lateinit var btnMainChallenge: MaterialButton
+    private lateinit var tvMainChallengeText: TextView
+    private lateinit var ivMainChallengeIcon: ImageView
+    private lateinit var chipSnake: Chip
+    private lateinit var chipDots: Chip
+    private lateinit var chipMath: Chip
+    private lateinit var chipColor: Chip
+    private lateinit var chipGroupWeekdays: ChipGroup
+    private lateinit var btnCreate: MaterialButton
+    private lateinit var btnDeleteAlarm: MaterialButton
+    private lateinit var weekdayChips: Map<Chip, Int>
+    private lateinit var prefs: SharedPreferences
+    
+    private var selectedChallengeType: ChallengeType = ChallengeType.NONE
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_edit_alarm)
+        
+        prefs = getSharedPreferences("alarm_prefs", Context.MODE_PRIVATE)
+
+        tvTimeBig = findViewById(R.id.tvTimeBig)
+        timeContainer = findViewById(R.id.timeContainer)
+        descriptionField = findViewById(R.id.etDescription)
+        switchCare = findViewById(R.id.switchCare)
+        tvCareLabel = findViewById(R.id.tvCareLabel)
+        btnMainChallenge = findViewById(R.id.btnMainChallenge)
+        tvMainChallengeText = findViewById(R.id.tvMainChallengeText)
+        ivMainChallengeIcon = findViewById(R.id.ivMainChallengeIcon)
+        chipSnake = findViewById(R.id.chipSnake)
+        chipDots = findViewById(R.id.chipDots)
+        chipMath = findViewById(R.id.chipMath)
+        chipColor = findViewById(R.id.chipColor)
+        chipGroupWeekdays = findViewById(R.id.chipGroupWeekdays)
+        btnCreate = findViewById(R.id.btnCreate)
+        btnDeleteAlarm = findViewById(R.id.btnDeleteAlarm)
+        
+        alarmId = intent.getIntExtra("alarm_id", -1)
+        isNew = alarmId == -1
+
+        weekdayChips = mapOf(
+            findViewById<Chip>(R.id.dayMon) to Calendar.MONDAY,
+            findViewById<Chip>(R.id.dayTue) to Calendar.TUESDAY,
+            findViewById<Chip>(R.id.dayWed) to Calendar.WEDNESDAY,
+            findViewById<Chip>(R.id.dayThu) to Calendar.THURSDAY,
+            findViewById<Chip>(R.id.dayFri) to Calendar.FRIDAY,
+            findViewById<Chip>(R.id.daySat) to Calendar.SATURDAY,
+            findViewById<Chip>(R.id.daySun) to Calendar.SUNDAY
+        )
+
+        bindInitialData()
+        setupListeners()
+        updateTimeDisplay()
+    }
+    
+    private fun setupListeners() {
+        tvTimeBig.setOnClickListener { openTimePicker() }
+        timeContainer.setOnClickListener { openTimePicker() }
+        
+        chipSnake.setOnClickListener { selectChallenge(ChallengeType.SNAKE) }
+        chipDots.setOnClickListener { selectChallenge(ChallengeType.DOTS) }
+        chipMath.setOnClickListener { selectChallenge(ChallengeType.MATH) }
+        chipColor.setOnClickListener { selectChallenge(ChallengeType.COLOR) }
+        
+        switchCare.setOnCheckedChangeListener { _, isChecked ->
+            tvCareLabel.text = if (isChecked) getString(R.string.edit_care_on) else getString(R.string.edit_care_off)
+        }
+        
+        btnCreate.setOnClickListener { onSave() }
+        btnDeleteAlarm.apply {
+            visibility = if (isNew) View.GONE else View.VISIBLE
+            setOnClickListener { onDelete() }
+        }
+    }
+
+    private fun bindInitialData() {
+        val timeMillis = intent.getLongExtra("time", System.currentTimeMillis())
+        val cal = Calendar.getInstance().apply { timeInMillis = timeMillis }
+        selectedHour = cal.get(Calendar.HOUR_OF_DAY)
+        selectedMinute = cal.get(Calendar.MINUTE)
+
+        descriptionField.setText(intent.getStringExtra("description") ?: "")
+
+        selectedDateMillis = intent.getLongExtra("date", -1L).let { if (it == -1L) null else it }
+        intent.getIntegerArrayListExtra("weekdays")?.toSet()?.let { setWeekdaysChecked(it) }
+
+        selectedChallengeType = ChallengeType.from(intent.getStringExtra("challenge_type")) ?: ChallengeType.NONE
+        updateChallengeDisplay()
+
+        switchCare.isChecked = intent.getBooleanExtra("enabled", true)
+        tvCareLabel.text = if (switchCare.isChecked) getString(R.string.edit_care_on) else getString(R.string.edit_care_off)
+    }
+
+    private fun selectChallenge(type: ChallengeType) {
+        selectedChallengeType = type
+        updateChallengeDisplay()
+    }
+    
+    private fun updateChallengeDisplay() {
+        val (textRes, iconRes) = when (selectedChallengeType) {
+            ChallengeType.NONE -> R.string.edit_morning_me to android.R.drawable.ic_dialog_info
+            ChallengeType.SNAKE -> R.string.challenge_snake to android.R.drawable.ic_dialog_info
+            ChallengeType.DOTS -> R.string.challenge_dots to android.R.drawable.ic_dialog_info
+            ChallengeType.MATH -> R.string.challenge_math to android.R.drawable.ic_dialog_info
+            ChallengeType.DATE -> R.string.challenge_date to android.R.drawable.ic_dialog_info
+            ChallengeType.COLOR -> R.string.challenge_color to android.R.drawable.ic_dialog_info
+            else -> R.string.edit_morning_me to android.R.drawable.ic_dialog_info
+        }
+        tvMainChallengeText.text = getString(textRes)
+        ivMainChallengeIcon.setImageResource(iconRes)
+    }
+    
+    private fun openTimePicker() {
+        val useSpinner = prefs.getBoolean("time_picker_spinner", false)
+        
+        if (useSpinner) {
+            showSpinnerTimePicker()
+        } else {
+            showClockTimePicker()
+        }
+    }
+    
+    private fun showClockTimePicker() {
+        val dialog = TimePickerDialog(this, { _, hour, minute ->
+            selectedHour = hour
+            selectedMinute = minute
+            updateTimeDisplay()
+        }, selectedHour, selectedMinute, true)
+        dialog.show()
+    }
+    
+    private fun showSpinnerTimePicker() {
+        val hourPicker = NumberPicker(this).apply {
+            minValue = 0
+            maxValue = 23
+            value = selectedHour
+            setFormatter { String.format("%02d", it) }
+        }
+        
+        val minutePicker = NumberPicker(this).apply {
+            minValue = 0
+            maxValue = 59
+            value = selectedMinute
+            setFormatter { String.format("%02d", it) }
+        }
+        
+        val layout = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.HORIZONTAL
+            addView(hourPicker, android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            addView(minutePicker, android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        }
+        
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.edit_time_title))
+            .setView(layout)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                selectedHour = hourPicker.value
+                selectedMinute = minutePicker.value
+                updateTimeDisplay()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+    
+    private fun updateTimeDisplay() {
+        tvTimeBig.text = String.format("%02d:%02d", selectedHour, selectedMinute)
+    }
+
+    private fun getSelectedWeekdays(): Set<Int> {
+        return weekdayChips.filter { (chip, _) -> chip.isChecked }.values.toSet()
+    }
+
+    private fun setWeekdaysChecked(days: Set<Int>) {
+        weekdayChips.forEach { (chip, day) -> chip.isChecked = days.contains(day) }
+    }
+
+    private fun onSave() {
+        val selectedWeekdays = getSelectedWeekdays()
+        val triggerCal = TimeLogic.calculateNextTrigger(
+            selectedHour,
+            selectedMinute,
+            selectedWeekdays,
+            selectedDateMillis
+        )
+
+        val result = Intent().apply {
+            putExtra("alarm_id", alarmId)
+            putExtra("time", triggerCal.timeInMillis)
+            putExtra("date", selectedDateMillis ?: -1L)
+            putExtra("enabled", switchCare.isChecked)
+            putExtra("description", descriptionField.text.toString())
+            putIntegerArrayListExtra("weekdays", ArrayList(selectedWeekdays))
+            putExtra("challenge_type", selectedChallengeType.name)
+        }
+        setResult(RESULT_OK, result)
+        finish()
+    }
+
+    private fun onDelete() {
+        val result = Intent().apply {
+            putExtra("alarm_id", alarmId)
+            putExtra("delete", true)
+        }
+        setResult(RESULT_OK, result)
+        finish()
+    }
+}
+
+================================================================================
+UPDATED setupSettingsPanel() METHOD FOR MainActivity.kt
+================================================================================
+
+    private fun setupSettingsPanel() {
+        val langByButton: Map<Int, String?> = mapOf(
+            binding.btnLangSystem.id to null,
+            binding.btnLangRu.id to "ru",
+            binding.btnLangEn.id to "en"
+        )
+
+        val savedLang = LocaleHelper.getSavedLanguage(this)
+        val initialButtonId = if (savedLang == null) {
+            binding.btnLangSystem.id
+        } else {
+            langByButton.entries.find { it.value == savedLang }?.key ?: binding.btnLangSystem.id
+        }
+        binding.mbtgLang.check(initialButtonId)
+
+        binding.mbtgLang.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            val selectedLang = langByButton[checkedId]
+            val currentSaved = LocaleHelper.getSavedLanguage(this)
+            if (selectedLang == currentSaved) return@addOnButtonCheckedListener
+
+            if (selectedLang == null) {
+                LocaleHelper.clearLanguage(this)
+            } else {
+                LocaleHelper.saveLanguage(this, selectedLang)
+            }
+            recreate()
+        }
+
+        val mode = prefs.getInt("theme_mode", defaultThemeMode)
+        when (mode) {
+            AppCompatDelegate.MODE_NIGHT_NO -> binding.rbThemeLight.isChecked = true
+            AppCompatDelegate.MODE_NIGHT_YES -> binding.rbThemeDark.isChecked = true
+            else -> binding.rbThemeSystem.isChecked = true
+        }
+
+        binding.rgTheme.setOnCheckedChangeListener { _, checkedId ->
+            val newMode = when (checkedId) {
+                binding.rbThemeLight.id -> AppCompatDelegate.MODE_NIGHT_NO
+                binding.rbThemeDark.id -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+            prefs.edit().putInt("theme_mode", newMode).apply()
+            AppCompatDelegate.setDefaultNightMode(newMode)
+        }
+
+        val is24h = prefs.getBoolean("is24h", true)
+        binding.switch24h.isChecked = is24h
+        binding.switch24h.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("is24h", checked).apply()
+            Toast.makeText(this, if (checked) getString(R.string.time_format_24h_toast) else getString(R.string.time_format_12h_toast), Toast.LENGTH_SHORT).show()
+        }
+
+        // NEW: Time Picker Style Preference
+        val useSpinner = prefs.getBoolean("time_picker_spinner", false)
+        binding.switchTimePickerStyle.isChecked = useSpinner
+        binding.switchTimePickerStyle.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("time_picker_spinner", checked).apply()
+            Toast.makeText(this, if (checked) getString(R.string.time_picker_style_spinner) else getString(R.string.time_picker_style_clock), Toast.LENGTH_SHORT).show()
+        }
+
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START)
+    }
+
+================================================================================
+END OF CODE LISTINGS
+================================================================================
