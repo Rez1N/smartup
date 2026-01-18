@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import java.util.Random
 
 class MathChallengeFragment : Fragment() {
-
     internal var num1 = 0
     internal var num2 = 0
     internal var correctAnswer = 0

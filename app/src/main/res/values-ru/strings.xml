@@ -1,0 +1,136 @@
+<resources>
+    <string name="app_name">smartup</string>
+
+    <string name="color_challenge_hint">Введите название цвета</string>
+    <string name="color_red">Красный</string>
+    <string name="color_green">Зеленый</string>
+    <string name="color_blue">Синий</string>
+    <string name="color_yellow">Желтый</string>
+    <string name="color_black">Черный</string>
+    <string name="color_white">Белый</string>
+
+    <string name="color_submit">Проверить</string>
+
+    <string name="date_challenge_hint">Введите сегодняшнюю дату</string>
+    <string name="date_challenge_format">дд.мм.гггг</string>
+    <string name="date_challenge_helper">Можно использовать точки, слэши или пробелы</string>
+    <string name="date_submit">Проверить</string>
+
+    <string name="dots_title">Графический узор</string>
+    <string name="dots_draw_instruction">Нарисуйте узор «%1$s»</string>
+    <string name="dots_draw_instruction_placeholder">Нарисуйте узор</string>
+    <string name="dots_new_pattern">Новый узор</string>
+    <string name="dots_reset_pattern">Сбросить</string>
+    <string name="dots_progress">Выбрано: %1$d/%2$d</string>
+    <string name="dots_progress_placeholder">Выбрано: 0/0</string>
+    <string name="dots_wrong_pattern">Неверный узор, попробуйте снова</string>
+    <string name="dots_pattern_complete">Узор совпал!</string>
+    <string name="dots_pattern_name">Узор: %1$s</string>
+    <string name="dots_pattern_name_placeholder">Узор: ?</string>
+
+    <string name="alarms_title">Будильники</string>
+    <string name="alarms_subtitle">Мягкое пробуждение каждый день</string>
+    <string name="alarms_empty">Будильников пока нет</string>
+    <string name="alarms_add">Создать будильник</string>
+    <string name="alarms_add_compact">Добавить будильник</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_system">Как в системе</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Тёмная</string>
+    <string name="settings_time_format">Формат времени</string>
+
+    <string name="time_picker_style_clock">Использовать часы</string>
+
+    <string name="alarm_added">Будильник добавлен</string>
+    <string name="alarm_deleted">Будильник удалён</string>
+    <string name="alarm_switch_on">Вкл</string>
+    <string name="alarm_switch_off">Выкл</string>
+    <string name="alarm_time_placeholder">00:00</string>
+    <string name="alarm_meta_none">Нет описания</string>
+    <string name="alarm_description_fallback">Мягкое утро</string>
+    <string name="alarm_info">Активных: %1$d. Ближайший: %2$s%3$s</string>
+    <string name="alarm_info_date"> (дата: %1$s)</string>
+    <string name="alarm_info_weekdays"> (%1$s)</string>
+    <string name="time_format_24h_toast">24-часовой формат</string>
+    <string name="time_format_12h_toast">12-часовой формат</string>
+
+    <string name="edit_time_title">Время сигнала</string>
+    <string name="edit_time_format_hint">24-часовой формат</string>
+    <string name="edit_description_hint">Название</string>
+    <string name="edit_challenge_title">Челлендж</string>
+    <string name="edit_challenge_none">Без челленджа</string>
+    <string name="edit_challenge_choose">Выбрать челлендж</string>
+    <string name="edit_date_title">Дата и повтор</string>
+    <string name="edit_select_date">Выбрать дату</string>
+    <string name="edit_clear_date">Без даты</string>
+    <string name="edit_date_format">Дата: %1$d.%2$d.%3$d</string>
+    <string name="edit_weekdays_title">Дни недели</string>
+    <string name="weekday_mon">Пн</string>
+    <string name="weekday_tue">Вт</string>
+    <string name="weekday_wed">Ср</string>
+    <string name="weekday_thu">Чт</string>
+    <string name="weekday_fri">Пт</string>
+    <string name="weekday_sat">Сб</string>
+    <string name="weekday_sun">Вс</string>
+    <string name="edit_enabled_label">Будильник активен</string>
+    <string name="edit_save">Сохранить</string>
+    <string name="edit_delete">Удалить будильник</string>
+
+    <string name="challenge_dialog_title">Челлендж</string>
+    <string name="challenge_none">Без испытания</string>
+    <string name="challenge_snake">Змейка</string>
+    <string name="challenge_dots">Графический ключ</string>
+    <string name="challenge_math">Математический пример</string>
+    <string name="challenge_date">Написать сегодняшнюю дату</string>
+    <string name="challenge_color">Угадать цвет</string>
+    <string name="common_cancel">Отмена</string>
+
+    <string name="snake_instruction">Соберите 5 яблок</string>
+    <string name="snake_score">Яблоки: %1$d/5</string>
+    <string name="snake_score_initial">Яблоки: 0/5</string>
+    <string name="snake_up">Вверх</string>
+    <string name="snake_down">Вниз</string>
+    <string name="snake_left">Влево</string>
+    <string name="snake_right">Вправо</string>
+
+    <string name="math_submit">Проверить</string>
+    <string name="math_question">%1$d + %2$d = ?</string>
+
+    <string name="alarm_ringing_toast">Будильник звонит!</string>
+    <string name="alarm_notification_title">Будильник</string>
+    <string name="alarm_notification_text">Нажмите, чтобы остановить</string>
+    <string name="alarm_channel_name">Будильники</string>
+    <string name="alarm_channel_desc">Уведомления будильника</string>
+
+    <string name="edit_morning_ritual">Утренний ритуал</string>
+    <string name="edit_morning_me">Без испытания</string>
+    <string name="edit_subtitle"></string>
+    <string name="edit_how_to_start">Как ты хочешь начать этот день?</string>
+    <string name="edit_meds">Лекарства</string>
+    <string name="edit_slow_morning">Медленное утро</string>
+    <string name="edit_focus">Фокус</string>
+    <string name="edit_turn_off_hint">Будильник отключится после выполнения</string>
+    <string name="edit_activation">Активация пробуждения</string>
+    <string name="edit_tab_weekdays">Будни</string>
+    <string name="edit_tab_everyday">Каждый день</string>
+    <string name="edit_tab_weekends">Выходные</string>
+    <string name="edit_care_on">Будильник включен</string>
+    <string name="edit_care_off">Будильник выключен</string>
+    <string name="chip_snake">Змейка</string>
+    <string name="chip_dots">Точки</string>
+    <string name="chip_math">Математика</string>
+    <string name="chip_color">Цвет</string>
+
+    <string name="time_picker_style_label">Тип ввода времени</string>
+    <string name="time_picker_style_spinner">Барабанный тип</string>
+    <string name="settings_time_format_24h">24-часовой формат</string>
+    <string name="settings_language">Язык</string>
+    <string name="lang_system">System</string>
+    <string name="lang_ru">RU</string>
+    <string name="lang_en">EN</string>
+    <string name="settings_open_menu">Настройки</string>
+
+    <string name="edit_create_button">Добавить будильник</string>
+</resources>

@@ -12,7 +12,6 @@ import java.util.Date
 import java.util.Locale
 
 class DateChallengeFragment : Fragment() {
-
     private lateinit var answerEditText: EditText
     private lateinit var submitButton: Button
 

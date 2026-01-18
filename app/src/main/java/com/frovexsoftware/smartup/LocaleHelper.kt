@@ -1,16 +1,15 @@
 package com.frovexsoftware.smartup
 
 import android.content.Context
-import android.content.res.Configuration
-import java.util.Locale
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 
 object LocaleHelper {
     private const val PREFS_NAME = "alarm_prefs"
     private const val KEY_LANG = "app_lang"
 
     fun wrap(base: Context): Context {
-        val lang = getSavedLanguage(base) ?: return base
-        return updateLocale(base, lang)
+        return base
     }
 
     fun getSavedLanguage(context: Context): String? {
@@ -32,11 +31,18 @@ object LocaleHelper {
             .apply()
     }
 
-    fun updateLocale(context: Context, language: String): Context {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = Configuration(context.resources.configuration)
-        config.setLocale(locale)
-        return context.createConfigurationContext(config)
+    fun applySavedLocale(context: Context) {
+        val saved = getSavedLanguage(context)
+        setAppLocale(context, saved)
+    }
+
+    fun setAppLocale(context: Context, languageTag: String?) {
+        if (languageTag.isNullOrBlank()) {
+            clearLanguage(context)
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+        } else {
+            saveLanguage(context, languageTag)
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
+        }
     }
 }

@@ -35,7 +35,7 @@ class EditAlarmActivity : AppCompatActivity() {
     private lateinit var chipColor: LinearLayout
     private lateinit var btnMainChallenge: LinearLayout
     
-    private lateinit var btnCreate: MaterialButton
+    private lateinit var btnCreate: androidx.appcompat.widget.AppCompatButton
     private lateinit var btnDeleteAlarm: MaterialButton
     
     private val dayViews = mutableMapOf<Int, TextView>()
@@ -47,21 +47,81 @@ class EditAlarmActivity : AppCompatActivity() {
     private var selectedDays = setOf<Int>()
     private var isEnabled = true
     private var alarmId = -1
-
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(LocaleHelper.wrap(newBase))
-    }
+    private var selectedDateMillis: Long? = null
+    private var descriptionText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_alarm)
         
-        prefs = getSharedPreferences("smartup_settings", Context.MODE_PRIVATE)
+        prefs = getSharedPreferences("alarm_prefs", Context.MODE_PRIVATE)
         
         initializeViews()
+        // Set all button texts programmatically for localization and update on locale change
+        updateLocalizedTexts()
         setupListeners()
         loadAlarmData()
         updateUI()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateLocalizedTexts()
+    }
+
+    private fun updateLocalizedTexts() {
+        val currentLocale = resources.configuration.locales[0].language
+        btnCreate.text = if (currentLocale == "ru") {
+            getString(R.string.edit_create_button)
+        } else {
+            getString(R.string.alarms_add)
+        }
+        btnDeleteAlarm.text = getString(R.string.edit_delete)
+
+        // Localized weekday names
+        val dfs = java.text.DateFormatSymbols(resources.configuration.locales[0])
+        val weekDayNames = listOf(
+            dfs.shortWeekdays[Calendar.MONDAY],
+            dfs.shortWeekdays[Calendar.TUESDAY],
+            dfs.shortWeekdays[Calendar.WEDNESDAY],
+            dfs.shortWeekdays[Calendar.THURSDAY],
+            dfs.shortWeekdays[Calendar.FRIDAY],
+            dfs.shortWeekdays[Calendar.SATURDAY],
+            dfs.shortWeekdays[Calendar.SUNDAY]
+        )
+        val calendarDays = listOf(
+            Calendar.MONDAY,
+            Calendar.TUESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.THURSDAY,
+            Calendar.FRIDAY,
+            Calendar.SATURDAY,
+            Calendar.SUNDAY
+        )
+        dayViews.forEach { (index, view) ->
+            val calendarDay = calendarDays.getOrNull(index) ?: Calendar.MONDAY
+            val nameIndex = when (calendarDay) {
+                Calendar.MONDAY -> 0
+                Calendar.TUESDAY -> 1
+                Calendar.WEDNESDAY -> 2
+                Calendar.THURSDAY -> 3
+                Calendar.FRIDAY -> 4
+                Calendar.SATURDAY -> 5
+                Calendar.SUNDAY -> 6
+                else -> 0
+            }
+            view.text = weekDayNames[nameIndex]
+        }
+
+        // Localize all static UI texts
+        tvEditTitle.text = getString(R.string.edit_morning_ritual)
+        tvCareLabel.text = if (isEnabled) getString(R.string.edit_care_on) else getString(R.string.edit_care_off)
+        tabWeekdays.text = getString(R.string.edit_tab_weekdays)
+        tabEveryday.text = getString(R.string.edit_tab_everyday)
+        tabWeekends.text = getString(R.string.edit_tab_weekends)
+        // Main challenge label and chips will be updated in updateChallengeUI()
+        // If you have more static labels, add them here
     }
 
     private fun initializeViews() {
@@ -94,7 +154,7 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun setupInlineSpinnerIfNeeded() {
-        val useSpinner = prefs.getBoolean("time_picker_spinner", true) // Default true for drum
+        val useSpinner = prefs.getBoolean("time_picker_spinner", false)
         if (useSpinner) {
             tvTimeBig.visibility = View.GONE
             timeSpinnerContainer.visibility = View.VISIBLE
@@ -217,6 +277,13 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun openChallengeDialog() {
+        val challengeOrder = listOf(
+            ChallengeType.NONE,
+            ChallengeType.SNAKE,
+            ChallengeType.DOTS,
+            ChallengeType.MATH,
+            ChallengeType.COLOR
+        )
         val challenges = arrayOf(
             getString(R.string.edit_morning_me),
             getString(R.string.chip_snake),
@@ -224,11 +291,12 @@ class EditAlarmActivity : AppCompatActivity() {
             getString(R.string.chip_math),
             getString(R.string.chip_color)
         )
+        val initialIndex = challengeOrder.indexOf(selectedChallenge).coerceAtLeast(0)
         
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.edit_how_to_start)
-            .setSingleChoiceItems(challenges, selectedChallenge.ordinal) { dialog, which ->
-                selectedChallenge = ChallengeType.values()[which]
+            .setSingleChoiceItems(challenges, initialIndex) { dialog, which ->
+                selectedChallenge = challengeOrder.getOrElse(which) { ChallengeType.NONE }
                 updateChallengeUI()
                 dialog.dismiss()
             }
@@ -249,9 +317,9 @@ class EditAlarmActivity : AppCompatActivity() {
         dayViews.forEach { (_, view) -> view.alpha = 0.5f }
         
         val daysToSelect = when (tabIndex) {
-            0 -> listOf(0, 1, 2, 3, 4) // Weekdays Mon-Fri
-            1 -> listOf(0, 1, 2, 3, 4, 5, 6) // All days
-            2 -> listOf(5, 6) // Weekends Sat-Sun
+            0 -> listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY)
+            1 -> listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY)
+            2 -> listOf(Calendar.SATURDAY, Calendar.SUNDAY)
             else -> emptyList()
         }
         
@@ -261,10 +329,20 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun toggleDaySelection(dayIndex: Int) {
-        selectedDays = if (dayIndex in selectedDays) {
-            selectedDays - dayIndex
+        val calendarDay = when (dayIndex) {
+            0 -> Calendar.MONDAY
+            1 -> Calendar.TUESDAY
+            2 -> Calendar.WEDNESDAY
+            3 -> Calendar.THURSDAY
+            4 -> Calendar.FRIDAY
+            5 -> Calendar.SATURDAY
+            6 -> Calendar.SUNDAY
+            else -> Calendar.MONDAY
+        }
+        selectedDays = if (calendarDay in selectedDays) {
+            selectedDays - calendarDay
         } else {
-            selectedDays + dayIndex
+            selectedDays + calendarDay
         }
         updateDayUI()
         updateTabUI(-1) // No tab selected
@@ -273,7 +351,17 @@ class EditAlarmActivity : AppCompatActivity() {
     private fun updateDayUI() {
         // Use color change instead of alpha for selection
         dayViews.forEach { (index, view) ->
-            if (index in selectedDays) {
+            val calendarDay = when (index) {
+                0 -> Calendar.MONDAY
+                1 -> Calendar.TUESDAY
+                2 -> Calendar.WEDNESDAY
+                3 -> Calendar.THURSDAY
+                4 -> Calendar.FRIDAY
+                5 -> Calendar.SATURDAY
+                6 -> Calendar.SUNDAY
+                else -> Calendar.MONDAY
+            }
+            if (calendarDay in selectedDays) {
                 view.setBackgroundResource(R.drawable.bg_day_circle_active)
                 view.setTextColor(getColor(R.color.white))
                 view.alpha = 1f
@@ -364,18 +452,21 @@ class EditAlarmActivity : AppCompatActivity() {
 
     private fun loadAlarmData() {
         alarmId = intent.getIntExtra("alarm_id", -1)
-        if (alarmId != -1) {
-            selectedHour = intent.getIntExtra("hour", 7)
-            selectedMinute = intent.getIntExtra("minute", 0)
-            selectedChallenge = ChallengeType.values().getOrElse(intent.getIntExtra("challenge", 0)) { ChallengeType.NONE }
-            isEnabled = intent.getBooleanExtra("enabled", true)
-            selectedDays = intent.getSerializableExtra("weekdays") as? Set<Int> ?: setOf()
-            
-            tvEditTitle.text = intent.getStringExtra("description") ?: getString(R.string.edit_morning_ritual)
-        } else {
-            tvEditTitle.text = getString(R.string.edit_morning_ritual)
-            selectedDays = setOf(0, 1, 2, 3, 4) // Default to weekdays
-        }
+        val timeMillis = intent.getLongExtra("time", System.currentTimeMillis())
+        selectedDateMillis = intent.getLongExtra("date", -1L).let { if (it == -1L) null else it }
+        val cal = Calendar.getInstance().apply { timeInMillis = timeMillis }
+        selectedHour = cal.get(Calendar.HOUR_OF_DAY)
+        selectedMinute = cal.get(Calendar.MINUTE)
+
+        val challengeName = intent.getStringExtra("challenge_type")
+        selectedChallenge = ChallengeType.from(challengeName)
+        isEnabled = intent.getBooleanExtra("enabled", true)
+
+        val weekdaysList = intent.getIntegerArrayListExtra("weekdays") ?: arrayListOf()
+        selectedDays = weekdaysList.toSet()
+
+        descriptionText = intent.getStringExtra("description") ?: ""
+        tvEditTitle.text = getString(R.string.edit_morning_ritual)
     }
 
     private fun updateUI() {
@@ -387,14 +478,22 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun saveAlarm() {
+        val baseMillis = selectedDateMillis ?: System.currentTimeMillis()
+        val cal = Calendar.getInstance().apply {
+            timeInMillis = baseMillis
+            set(Calendar.HOUR_OF_DAY, selectedHour)
+            set(Calendar.MINUTE, selectedMinute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
         val resultIntent = Intent().apply {
             putExtra("alarm_id", alarmId)
-            putExtra("hour", selectedHour)
-            putExtra("minute", selectedMinute)
-            putExtra("challenge", selectedChallenge.ordinal)
+            putExtra("time", cal.timeInMillis)
+            putExtra("date", selectedDateMillis ?: -1L)
             putExtra("enabled", isEnabled)
-            putExtra("weekdays", selectedDays.toHashSet())
-            putExtra("description", tvEditTitle.text.toString())
+            putIntegerArrayListExtra("weekdays", ArrayList(selectedDays))
+            putExtra("description", descriptionText)
+            putExtra("challenge_type", selectedChallenge.name)
         }
         setResult(RESULT_OK, resultIntent)
         finish()
@@ -402,9 +501,10 @@ class EditAlarmActivity : AppCompatActivity() {
 
     private fun deleteAlarm() {
         val resultIntent = Intent().apply {
-            putExtra("delete_alarm_id", alarmId)
+            putExtra("alarm_id", alarmId)
+            putExtra("delete", true)
         }
-        setResult(2, resultIntent) // Custom result code for delete
+        setResult(RESULT_OK, resultIntent)
         finish()
     }
 }

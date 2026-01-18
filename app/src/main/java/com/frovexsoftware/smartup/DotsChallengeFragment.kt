@@ -9,7 +9,6 @@ import com.frovexsoftware.smartup.databinding.FragmentDotsChallengeBinding
 import com.frovexsoftware.smartup.PatternLockView.OnPatternCompleteListener
 
 class DotsChallengeFragment : Fragment() {
-
     private var _binding: FragmentDotsChallengeBinding? = null
     private val binding get() = _binding!!
 

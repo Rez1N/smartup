@@ -2,6 +2,16 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Smartup" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/alarm_bg</item>
+        <item name="colorPrimary">@color/purple_dark</item>
+        <item name="colorSecondary">@color/purple_medium</item>
+        <item name="colorTertiary">@color/purple_accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:colorBackground">@color/alarm_bg</item>
+        <item name="android:colorForeground">@color/alarm_text_primary</item>
+        <item name="colorSurface">@color/card_bg_default</item>
+        <item name="colorOnSurface">@color/alarm_text_primary</item>
+        <item name="colorSurfaceVariant">@color/chip_bg_inactive</item>
+        <item name="colorOnSurfaceVariant">@color/purple_medium</item>
     </style>
 
     <style name="Theme.Smartup" parent="Base.Theme.Smartup" />

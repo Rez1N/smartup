@@ -1,27 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal"
+    android:padding="24dp"
+    android:background="@drawable/bg_app_gradient">
 
     <TextView
         android:id="@+id/questionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:textColor="@color/purple_dark"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/answerEditText"
-        android:layout_width="100dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilMathAnswer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:gravity="center"/>
+        android:layout_marginBottom="16dp">
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/answerEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textAlignment="center"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/math_submit" />
+        android:text="@string/math_submit"
+        android:insetTop="10dp"
+        android:insetBottom="10dp" />
 
 </LinearLayout>

@@ -21,10 +21,6 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(LocaleHelper.wrap(newBase))
-    }
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: SharedPreferences
     private val defaultThemeMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -45,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        updateLocalizedTexts()
+
         setupSettingsPanel()
         binding.btnSettings.setOnClickListener { binding.drawerLayout.openDrawer(Gravity.END) }
         binding.btnAddAlarm.setOnClickListener { openCreateAlarm() }
@@ -59,6 +57,26 @@ class MainActivity : AppCompatActivity() {
             hideAlarmInfo()
         } else {
             showAlarmInfo()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateLocalizedTexts()
+    }
+
+    private fun updateLocalizedTexts() {
+        binding.tvTitle.text = getString(R.string.alarms_title)
+        binding.tvSubtitle.text = getString(R.string.alarms_subtitle)
+        binding.tvEmptyState.text = getString(R.string.alarms_empty)
+        // Settings button content description
+        binding.btnSettings.contentDescription = getString(R.string.settings_title)
+
+        val currentLocale = resources.configuration.locales[0].language
+        binding.btnAddAlarm.text = if (currentLocale == "ru") {
+            getString(R.string.edit_create_button)
+        } else {
+            getString(R.string.alarms_add)
         }
     }
 
@@ -134,6 +152,26 @@ class MainActivity : AppCompatActivity() {
         // binding.tvEmptyState.visibility = View.GONE // Removing as I am not sure if it exists in layout binding
 
         val inflater = layoutInflater
+        val dfs = java.text.DateFormatSymbols(resources.configuration.locales[0])
+        // Android: Calendar.MONDAY = 2 ... Calendar.SUNDAY = 1
+        val weekDayNames = listOf(
+            dfs.shortWeekdays[Calendar.MONDAY],
+            dfs.shortWeekdays[Calendar.TUESDAY],
+            dfs.shortWeekdays[Calendar.WEDNESDAY],
+            dfs.shortWeekdays[Calendar.THURSDAY],
+            dfs.shortWeekdays[Calendar.FRIDAY],
+            dfs.shortWeekdays[Calendar.SATURDAY],
+            dfs.shortWeekdays[Calendar.SUNDAY]
+        )
+        val weekDayCalendar = listOf(
+            Calendar.MONDAY,
+            Calendar.TUESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.THURSDAY,
+            Calendar.FRIDAY,
+            Calendar.SATURDAY,
+            Calendar.SUNDAY
+        )
         alarms.sortedBy { it.timeInMillis }.forEach { alarm ->
             val view = inflater.inflate(R.layout.item_alarm, binding.alarmsContainer, false)
             val tvTime = view.findViewById<android.widget.TextView>(R.id.tvAlarmTime)
@@ -160,52 +198,56 @@ class MainActivity : AppCompatActivity() {
                 else -> R.drawable.ic_leaf to R.string.edit_morning_me
             }
             ivChallengeIcon.setImageResource(iconRes)
-            tvChallengeName.text = getString(nameRes)
+            if (challengeType == ChallengeType.NONE) {
+                tvChallengeName.visibility = View.GONE
+            } else {
+                tvChallengeName.visibility = View.VISIBLE
+                tvChallengeName.text = getString(nameRes)
+            }
 
-            if (alarm.description.isNotBlank()) {
-                tvMeta.text = alarm.description
+            val metaText = alarm.description.trim()
+            val hiddenMeta = setOf(
+                getString(R.string.edit_morning_me),
+                getString(R.string.challenge_none),
+                getString(R.string.alarm_meta_none)
+            )
+            if (metaText.isNotBlank() && metaText !in hiddenMeta) {
+                tvMeta.text = metaText
                 tvMeta.visibility = View.VISIBLE
             } else {
                 tvMeta.visibility = View.GONE
             }
 
             switchEnabled.isChecked = alarm.enabled
-            // switchEnabled.text = if (alarm.enabled) getString(R.string.alarm_switch_on) else getString(R.string.alarm_switch_off) // Removing text from switch to match mockup
-            switchEnabled.text = "" 
+            switchEnabled.text = ""
             switchEnabled.setOnCheckedChangeListener { _, isChecked ->
                 updateAlarmEnabled(alarm, isChecked)
             }
 
             daysLayout.removeAllViews()
-            val weekDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
             val density = resources.displayMetrics.density
             val sizePx = (32 * density).toInt()
             val marginPx = (4 * density).toInt()
-            
             for (i in 0..6) {
                 val dayView = android.widget.TextView(this)
-                val isActive = alarm.weekdays.contains(i)
+                val calendarDay = weekDayCalendar[i]
+                val isActive = alarm.weekdays.contains(calendarDay)
                 dayView.text = weekDayNames[i]
                 dayView.textSize = 12f
                 dayView.gravity = android.view.Gravity.CENTER
                 dayView.includeFontPadding = false
-                
-                val params = android.widget.LinearLayout.LayoutParams(sizePx, sizePx) 
+                val params = android.widget.LinearLayout.LayoutParams(sizePx, sizePx)
                 params.setMargins(0, 0, marginPx, 0)
                 dayView.layoutParams = params
-                
-                 if (isActive) {
+                if (isActive) {
                     dayView.setBackgroundResource(R.drawable.bg_day_active)
-                    // We need to resolve the color if possible, or just parse it.
-                    // Assuming bg_day_active uses the purple color.
                     dayView.setTextColor(android.graphics.Color.WHITE)
                 } else {
-                    dayView.setBackgroundResource(R.drawable.bg_day_inactive) // Need to ensure this drawable exists or use color
-                     dayView.setTextColor(android.graphics.Color.parseColor("#8E7C9C"))
+                    dayView.setBackgroundResource(R.drawable.bg_day_inactive)
+                    dayView.setTextColor(android.graphics.Color.parseColor("#8E7C9C"))
                 }
                 daysLayout.addView(dayView)
             }
-            
             view.setOnClickListener { openEditAlarm(alarm) }
             binding.alarmsContainer.addView(view)
         }
@@ -322,12 +364,7 @@ class MainActivity : AppCompatActivity() {
             val currentSaved = LocaleHelper.getSavedLanguage(this)
             if (selectedLang == currentSaved) return@addOnButtonCheckedListener
 
-            if (selectedLang == null) {
-                LocaleHelper.clearLanguage(this)
-            } else {
-                LocaleHelper.saveLanguage(this, selectedLang)
-            }
-            recreate()
+            LocaleHelper.setAppLocale(this, selectedLang)
         }
 
         val mode = prefs.getInt("theme_mode", defaultThemeMode)

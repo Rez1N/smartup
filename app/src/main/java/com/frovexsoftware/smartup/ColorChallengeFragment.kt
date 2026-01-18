@@ -14,7 +14,6 @@ import java.util.Locale
 import java.util.Random
 
 class ColorChallengeFragment : Fragment() {
-
     private lateinit var colorView: View
     private lateinit var answerEditText: EditText
     private lateinit var submitButton: Button

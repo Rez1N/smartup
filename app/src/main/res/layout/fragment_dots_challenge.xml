@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:background="@drawable/bg_app_gradient">
 
     <TextView
         android:id="@+id/tvDotsPatternName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dots_pattern_name_placeholder"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textColor="@color/purple_dark" />
 
     <TextView
         android:id="@+id/tvDotsError"
@@ -27,13 +30,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegenerateDots"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dots_new_pattern" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnResetDots"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,17 +44,28 @@
             android:text="@string/dots_reset_pattern" />
     </LinearLayout>
 
-    <com.frovexsoftware.smartup.PatternLockView
-        android:id="@+id/patternView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="16dp" />
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/alarm_text_secondary"
+        app:strokeWidth="1dp">
+
+        <com.frovexsoftware.smartup.PatternLockView
+            android:id="@+id/patternView"
+            android:layout_width="300dp"
+            android:layout_height="300dp" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/tvDotsProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textColor="@color/purple_medium"
         android:text="@string/dots_progress_placeholder" />
 
 </LinearLayout>

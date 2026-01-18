@@ -383,7 +383,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCreate"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -392,8 +392,9 @@
             android:text="@string/edit_create_button"
             android:textSize="18sp"
             android:background="@drawable/bg_button_gradient"
-            app:backgroundTint="@null"
-            app:cornerRadius="28dp"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/cardCare"
             app:layout_constraintBottom_toTopOf="@id/btnDeleteAlarm"
             />

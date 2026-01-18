@@ -8,4 +8,22 @@
     <color name="alarm_divider">#232932</color>
     <color name="alarm_text_primary">#E9ECF2</color>
     <color name="alarm_text_secondary">#98A2B3</color>
+
+    <!-- New Design Palette (Dark) -->
+    <color name="purple_dark">#E9E2F7</color>
+    <color name="purple_medium">#BBAED6</color>
+    <color name="purple_accent">#B99CFF</color>
+    <color name="purple_light_bg">#1F1A2A</color>
+    <color name="white_semi">#1AFFFFFF</color>
+    <color name="card_bg_default">#1A1F25</color>
+    <color name="chip_bg_active">#6F4FB7</color>
+    <color name="chip_bg_inactive">#2C2436</color>
+    <color name="gradient_start">#6B4CE0</color>
+    <color name="gradient_end">#4A2EC8</color>
+
+    <!-- Gradient colors for new design (Dark) -->
+    <color name="lilac_gradient_start">#15121B</color>
+    <color name="lilac_gradient_end">#1B1624</color>
+    <color name="lilac_surface_glass_stroke">#2A2236</color>
+    <color name="lilac_on_surface_secondary">#B2A7C5</color>
 </resources>
