@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:padding="24dp"
+    android:padding="@dimen/spacing_l"
     android:background="@drawable/bg_app_gradient">
 
     <TextView
@@ -17,12 +17,12 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@color/purple_dark"
-        android:paddingTop="8dp" />
+        android:paddingTop="@dimen/spacing_xs" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/spacing_s"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/alarm_text_secondary"
@@ -40,7 +40,7 @@
         android:id="@+id/tvSnakeScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_xs"
         android:text="@string/snake_score_initial"
         android:textStyle="bold"
         android:textColor="@color/purple_dark" />
@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/spacing_s"
         android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
@@ -72,8 +72,8 @@
                 android:text="@string/snake_left" />
 
             <Space
-                android:layout_width="16dp"
-                android:layout_height="16dp" />
+                android:layout_width="@dimen/spacing_m"
+                android:layout_height="@dimen/spacing_m" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSnakeRight"

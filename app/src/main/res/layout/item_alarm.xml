@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="@dimen/spacing_m"
     app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
@@ -13,8 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="20dp">
+        android:paddingHorizontal="@dimen/spacing_m"
+        android:paddingVertical="@dimen/spacing_m">
 
         <TextView
             android:id="@+id/tvAlarmTime"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/spacing_xs"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAlarmTime">
 
@@ -63,7 +63,7 @@
                 tools:text="Утро для себя"
                 android:textSize="16sp"
                 android:textColor="@color/purple_dark"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/spacing_xs"
                 android:fontFamily="sans-serif" />
         </LinearLayout>
 
@@ -72,12 +72,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_challenge_pill"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="@dimen/spacing_s"
             android:paddingVertical="6dp"
             tools:text="Лекарства включены"
             android:textColor="@color/purple_dark"
             android:textSize="14sp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/spacing_s"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/challengeContainer" />
@@ -87,7 +87,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_m"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAlarmMeta"

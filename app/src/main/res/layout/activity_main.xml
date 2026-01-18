@@ -11,8 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="16dp"
+        android:paddingHorizontal="@dimen/screen_horizontal_margin"
+        android:paddingTop="@dimen/spacing_m"
         android:background="@drawable/bg_app_gradient">
 
         <TextView
@@ -23,7 +23,7 @@
             android:fontFamily="sans-serif-medium"
             android:textSize="32sp"
             android:textColor="@color/purple_dark"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/spacing_s"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
             
@@ -72,7 +72,7 @@
             app:layout_constraintBottom_toTopOf="@+id/btnAddAlarm"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/spacing_m"
             android:paddingBottom="16dp">
 
             <LinearLayout
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="80dp" />
+                    android:paddingBottom="@dimen/bottom_overlay_inset" />
 
             </LinearLayout>
 
@@ -108,7 +108,7 @@
             android:layout_height="62dp"
             android:text="@string/alarms_add"
             android:textSize="18sp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/spacing_l"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             app:backgroundTint="@null"
@@ -129,7 +129,7 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/spacing_m"
         android:background="@color/alarm_card"
         android:layout_gravity="end"
         tools:ignore="UselessParent">

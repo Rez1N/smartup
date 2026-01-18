@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
+    android:padding="@dimen/spacing_l"
     android:gravity="center_horizontal"
     android:background="@drawable/bg_app_gradient">
 
@@ -16,13 +16,13 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textColor="@color/alarm_text_primary"
         android:gravity="center"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="@dimen/spacing_m" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/colorCard"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="@dimen/spacing_l"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/alarm_text_secondary"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/color_challenge_hint"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="@dimen/spacing_m">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/answerEditText"
