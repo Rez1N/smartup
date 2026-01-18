@@ -58,7 +58,7 @@
 
     <string name="edit_time_title">Alarm time</string>
     <string name="edit_time_format_hint">24-hour format</string>
-    <string name="edit_description_hint">Label</string>
+    <string name="edit_description_hint">Alarm name</string>
     <string name="edit_challenge_title">Challenge</string>
     <string name="edit_challenge_none">No challenge</string>
     <string name="edit_challenge_choose">Choose challenge</string>

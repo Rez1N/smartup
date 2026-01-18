@@ -58,7 +58,7 @@
 
     <string name="edit_time_title">Время сигнала</string>
     <string name="edit_time_format_hint">24-часовой формат</string>
-    <string name="edit_description_hint">Название</string>
+    <string name="edit_description_hint">Название будильника</string>
     <string name="edit_challenge_title">Челлендж</string>
     <string name="edit_challenge_none">Без челленджа</string>
     <string name="edit_challenge_choose">Выбрать челлендж</string>

@@ -140,7 +140,7 @@ class EditAlarmActivity : AppCompatActivity() {
         chipMath = findViewById(R.id.chipMath)
         chipColor = findViewById(R.id.chipColor)
         btnMainChallenge = findViewById(R.id.btnMainChallenge)
-        
+
         btnCreate = findViewById(R.id.btnCreate)
         btnDeleteAlarm = findViewById(R.id.btnDeleteAlarm)
         
@@ -465,7 +465,7 @@ class EditAlarmActivity : AppCompatActivity() {
         val weekdaysList = intent.getIntegerArrayListExtra("weekdays") ?: arrayListOf()
         selectedDays = weekdaysList.toSet()
 
-        descriptionText = intent.getStringExtra("description") ?: ""
+        descriptionText = ""
         tvEditTitle.text = getString(R.string.edit_morning_ritual)
     }
 
@@ -478,6 +478,7 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun saveAlarm() {
+        descriptionText = ""
         val baseMillis = selectedDateMillis ?: System.currentTimeMillis()
         val cal = Calendar.getInstance().apply {
             timeInMillis = baseMillis
