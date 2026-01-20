@@ -370,8 +370,8 @@ class EditAlarmActivity : AppCompatActivity() {
             ChallengeType.NONE -> R.drawable.ic_leaf to R.string.edit_morning_me
             ChallengeType.TEXT -> R.drawable.ic_leaf to R.string.edit_morning_me
             ChallengeType.DATE -> R.drawable.ic_leaf to R.string.edit_morning_me
-            ChallengeType.SHAKE -> R.drawable.ic_leaf to R.string.challenge_shake
-            ChallengeType.HOLD -> R.drawable.ic_leaf to R.string.challenge_hold
+            ChallengeType.SHAKE -> R.drawable.ic_challenge_shake to R.string.challenge_shake
+            ChallengeType.HOLD -> R.drawable.ic_challenge_hold to R.string.challenge_hold
         }
         
         val icon = findViewById<android.widget.ImageView>(R.id.ivMainChallengeIcon)

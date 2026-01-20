@@ -221,8 +221,8 @@ class MainActivity : AppCompatActivity() {
                 ChallengeType.DOTS -> R.drawable.ic_challenge_dots to R.string.chip_dots
                 ChallengeType.MATH -> R.drawable.ic_challenge_math to R.string.chip_math
                 ChallengeType.COLOR -> R.drawable.ic_challenge_color to R.string.chip_color
-                ChallengeType.SHAKE -> R.drawable.ic_leaf to R.string.challenge_shake
-                ChallengeType.HOLD -> R.drawable.ic_leaf to R.string.challenge_hold
+                ChallengeType.SHAKE -> R.drawable.ic_challenge_shake to R.string.challenge_shake
+                ChallengeType.HOLD -> R.drawable.ic_challenge_hold to R.string.challenge_hold
                 else -> R.drawable.ic_leaf to R.string.edit_morning_me
             }
             ivChallengeIcon.setImageResource(iconRes)

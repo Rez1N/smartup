@@ -151,7 +151,7 @@
                      <LinearLayout
                         android:id="@+id/chipSnake"
                         android:layout_width="0dp"
-                        android:layout_height="30dp"
+                                android:layout_height="28dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_tab_inactive"
                         android:gravity="center"
@@ -165,7 +165,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/chip_snake"
-                            android:textSize="10sp"
+                            android:textSize="9sp"
                             android:textColor="@color/purple_dark"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -175,7 +175,7 @@
                     <LinearLayout
                         android:id="@+id/chipDots"
                         android:layout_width="0dp"
-                        android:layout_height="30dp"
+                        android:layout_height="28dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_tab_inactive"
                         android:gravity="center"
@@ -189,7 +189,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/chip_dots"
-                            android:textSize="10sp"
+                            android:textSize="9sp"
                             android:textColor="@color/purple_dark"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -213,7 +213,7 @@
                         <LinearLayout
                             android:id="@+id/chipShake"
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="28dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_tab_inactive"
                             android:gravity="center"
@@ -221,13 +221,13 @@
                             <ImageView
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:src="@drawable/ic_leaf"
+                                android:src="@drawable/ic_challenge_shake"
                                 app:tint="@color/purple_dark" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/challenge_shake"
-                                android:textSize="10sp"
+                                android:textSize="9sp"
                                 android:textColor="@color/purple_dark"
                                 android:singleLine="true"
                                 android:ellipsize="end"
@@ -237,7 +237,7 @@
                         <LinearLayout
                             android:id="@+id/chipHold"
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="28dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_tab_inactive"
                             android:gravity="center"
@@ -245,13 +245,13 @@
                             <ImageView
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:src="@drawable/ic_leaf"
+                                android:src="@drawable/ic_challenge_hold"
                                 app:tint="@color/purple_dark" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/challenge_hold"
-                                android:textSize="10sp"
+                                android:textSize="9sp"
                                 android:textColor="@color/purple_dark"
                                 android:singleLine="true"
                                 android:ellipsize="end"
@@ -262,20 +262,20 @@
                     <LinearLayout
                         android:id="@+id/chipRandom"
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                        android:layout_height="28dp"
                         android:background="@drawable/bg_tab_inactive"
                         android:gravity="center"
                         android:layout_marginTop="6dp">
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/ic_leaf"
+                            android:src="@drawable/ic_challenge_random"
                             app:tint="@color/purple_dark" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/challenge_random"
-                            android:textSize="10sp"
+                            android:textSize="9sp"
                             android:textColor="@color/purple_dark"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -292,7 +292,7 @@
                      <LinearLayout
                         android:id="@+id/chipMath"
                         android:layout_width="0dp"
-                        android:layout_height="30dp"
+                                android:layout_height="28dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_tab_inactive"
                         android:gravity="center"
@@ -306,7 +306,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/chip_math"
-                            android:textSize="10sp"
+                            android:textSize="9sp"
                             android:textColor="@color/purple_dark"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -316,7 +316,7 @@
                     <LinearLayout
                         android:id="@+id/chipColor"
                         android:layout_width="0dp"
-                        android:layout_height="30dp"
+                        android:layout_height="28dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_tab_inactive"
                         android:gravity="center"
@@ -330,7 +330,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/chip_color"
-                            android:textSize="10sp"
+                            android:textSize="9sp"
                             android:textColor="@color/purple_dark"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -523,10 +523,10 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCreate"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_marginBottom="6dp"
             android:text="@string/edit_create_button"
-            android:textSize="16sp"
+            android:textSize="14.4sp"
             android:background="@drawable/bg_button_gradient"
             android:fontFamily="sans-serif-medium"
             android:textAllCaps="false"
@@ -538,6 +538,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/edit_delete"
+            android:textSize="14.4sp"
             android:textColor="#FF5252" />
 
     </LinearLayout>
