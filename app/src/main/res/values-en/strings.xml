@@ -11,9 +11,9 @@
 
     <string name="color_submit">Check</string>
 
-    <string name="date_challenge_hint">Enter todays date</string>
+    <string name="date_challenge_hint">Enter the date for today</string>
     <string name="date_challenge_format">dd.MM.yyyy</string>
-    <string name="date_challenge_helper">Dots, slashes or spaces are ok</string>
+    <string name="date_challenge_helper">Dots, slashes or spaces are OK</string>
     <string name="date_submit">Check</string>
 
     <string name="dots_title">Pattern lock</string>
@@ -83,8 +83,11 @@
     <string name="challenge_snake">Snake</string>
     <string name="challenge_dots">Pattern lock</string>
     <string name="challenge_math">Math example</string>
-    <string name="challenge_date">Enter todays date</string>
+    <string name="challenge_date">Enter the date for today</string>
     <string name="challenge_color">Guess the color</string>
+    <string name="challenge_shake">Shake phone</string>
+    <string name="challenge_hold">Hold button</string>
+    <string name="challenge_random">Random challenge</string>
     <string name="common_cancel">Cancel</string>
 
     <string name="snake_instruction">Collect 5 apples</string>
@@ -103,6 +106,17 @@
     <string name="alarm_notification_text">Tap to stop</string>
     <string name="alarm_channel_name">Alarms</string>
     <string name="alarm_channel_desc">Alarm notifications</string>
+    <string name="alarm_no_challenge_title">Alarm</string>
+    <string name="alarm_stop">Stop</string>
+    <string name="alarm_snooze">Snooze 10 minutes</string>
+    <string name="shake_title">Shake phone</string>
+    <string name="shake_instruction">Shake the device 10 times</string>
+    <string name="shake_progress">%1$d/%2$d</string>
+    <string name="shake_progress_placeholder">0/10</string>
+    <string name="hold_title">Hold</string>
+    <string name="hold_instruction">Hold the button for 10 seconds</string>
+    <string name="hold_button">Hold</string>
+    <string name="extra_challenges">Extra challenges</string>
 
     <string name="edit_morning_ritual">Morning ritual</string>
     <string name="edit_morning_me">No challenge</string>

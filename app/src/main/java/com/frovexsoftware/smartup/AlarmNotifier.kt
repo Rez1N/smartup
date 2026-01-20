@@ -1,16 +1,19 @@
 package com.frovexsoftware.smartup
 
+import android.app.Application
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 
 object AlarmNotifier {
     private const val CHANNEL_ID = "alarm_channel"
@@ -19,6 +22,10 @@ object AlarmNotifier {
 
     private val handler = Handler(Looper.getMainLooper())
     private var isRunning = false
+
+    private var lastAlarmId: Int = -1
+    private var lastAlarmTime: Long = -1L
+    private var lastChallengeType: String? = null
 
     private val reposter = object : Runnable {
         override fun run() {
@@ -29,11 +36,14 @@ object AlarmNotifier {
         }
     }
 
-    private var currentContext: Context? = null
+    private var currentContext: Application? = null
     
-    fun start(context: Context) {
-        val appCtx = context.applicationContext
+    fun start(context: Context, alarmId: Int, timeMillis: Long, challengeType: String?) {
+        val appCtx = context.applicationContext as Application
         currentContext = appCtx
+        lastAlarmId = alarmId
+        lastAlarmTime = timeMillis
+        lastChallengeType = challengeType
         if (!isRunning) {
             postNotification(appCtx)
             handler.postDelayed(reposter, PERIOD_MS)
@@ -51,11 +61,21 @@ object AlarmNotifier {
     private fun postNotification(context: Context) {
         ensureChannel(context)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = android.Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                return
+            }
+        }
+
         val fullScreenPendingIntent = PendingIntent.getActivity(
             context,
             1,
             Intent(context, StopAlarmActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra("alarm_id", lastAlarmId)
+                putExtra("time", lastAlarmTime)
+                putExtra("challenge_type", lastChallengeType)
             },
             PendingIntent.FLAG_IMMUTABLE
         )

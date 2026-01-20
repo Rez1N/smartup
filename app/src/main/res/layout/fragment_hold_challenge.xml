@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvHoldTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hold_title"
+        android:textColor="@color/purple_dark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvHoldInstruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hold_instruction"
+        android:textColor="@color/purple_medium"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp" />
+
+    <FrameLayout
+        android:layout_width="160dp"
+        android:layout_height="160dp">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/holdProgress"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:indeterminate="false"
+            app:indicatorSize="160dp"
+            app:trackThickness="6dp"
+            app:indicatorColor="@color/purple_medium"
+            app:trackColor="@color/card_bg_default" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnHold"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:text="@string/hold_button"
+            android:textAllCaps="false"
+            app:cornerRadius="60dp"
+            app:backgroundTint="@color/purple_dark"
+            android:textColor="@color/white" />
+    </FrameLayout>
+
+</LinearLayout>

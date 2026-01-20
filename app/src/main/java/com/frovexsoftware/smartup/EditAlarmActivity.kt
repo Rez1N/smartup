@@ -10,16 +10,19 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.FrameLayout
+import android.animation.ValueAnimator
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.button.MaterialButton
 import java.util.Calendar
+import java.util.Locale
 
 class EditAlarmActivity : AppCompatActivity() {
 
@@ -37,7 +40,16 @@ class EditAlarmActivity : AppCompatActivity() {
     private lateinit var chipDots: LinearLayout
     private lateinit var chipMath: LinearLayout
     private lateinit var chipColor: LinearLayout
+    private lateinit var chipShake: LinearLayout
+    private lateinit var chipHold: LinearLayout
+    private lateinit var chipRandom: LinearLayout
     private lateinit var btnMainChallenge: LinearLayout
+    private lateinit var extraChallengesContainer: LinearLayout
+    private lateinit var extraChallengesToggle: LinearLayout
+    private lateinit var ivExtraToggle: android.widget.ImageView
+    private lateinit var tvTurnOffHint: TextView
+    private lateinit var tvExtraChallengesLabel: TextView
+    private var isExtraChallengesExpanded = false
     
     private lateinit var btnCreate: androidx.appcompat.widget.AppCompatButton
     private lateinit var btnDeleteAlarm: MaterialButton
@@ -144,7 +156,15 @@ class EditAlarmActivity : AppCompatActivity() {
         chipDots = findViewById(R.id.chipDots)
         chipMath = findViewById(R.id.chipMath)
         chipColor = findViewById(R.id.chipColor)
+        chipShake = findViewById(R.id.chipShake)
+        chipHold = findViewById(R.id.chipHold)
+        chipRandom = findViewById(R.id.chipRandom)
         btnMainChallenge = findViewById(R.id.btnMainChallenge)
+        extraChallengesContainer = findViewById(R.id.extraChallengesContainer)
+        extraChallengesToggle = findViewById(R.id.extraChallengesToggle)
+        ivExtraToggle = findViewById(R.id.ivExtraToggle)
+        tvTurnOffHint = findViewById(R.id.tvTurnOffHint)
+        tvExtraChallengesLabel = findViewById(R.id.tvExtraChallengesLabel)
 
         btnCreate = findViewById(R.id.btnCreate)
         btnDeleteAlarm = findViewById(R.id.btnDeleteAlarm)
@@ -168,16 +188,17 @@ class EditAlarmActivity : AppCompatActivity() {
             // Create wrapper with theme
             val contextWrapper = android.view.ContextThemeWrapper(this, R.style.TimePickerTheme)
 
+            val padding = (12 * resources.displayMetrics.density).toInt()
             val layout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = android.view.Gravity.CENTER
                 layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
                     FrameLayout.LayoutParams.WRAP_CONTENT
                 )
                 // Add background to picker container for "design" request
                 setBackgroundResource(R.drawable.bg_card_soft)
-                setPadding(0, 12, 0, 12) // Slightly less internal padding for organic feel
+                setPadding(padding, padding, padding, padding) // Consistent dp padding
             }
             
             val hourPicker = NumberPicker(contextWrapper).apply {
@@ -192,10 +213,13 @@ class EditAlarmActivity : AppCompatActivity() {
                 minValue = 0
                 maxValue = 59
                 value = selectedMinute
-                setFormatter { i -> String.format("%02d", i) }
+                setFormatter { i -> String.format(Locale.getDefault(), "%02d", i) }
                 layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 setOnValueChangedListener { _, _, newVal -> selectedMinute = newVal }
             }
+
+            styleNumberPicker(hourPicker)
+            styleNumberPicker(minPicker)
             
             layout.addView(hourPicker)
             val spacer = TextView(this).apply { 
@@ -221,7 +245,12 @@ class EditAlarmActivity : AppCompatActivity() {
         chipDots.setOnClickListener { selectChallenge(ChallengeType.DOTS) }
         chipMath.setOnClickListener { selectChallenge(ChallengeType.MATH) }
         chipColor.setOnClickListener { selectChallenge(ChallengeType.COLOR) }
+        chipShake.setOnClickListener { selectChallenge(ChallengeType.SHAKE) }
+        chipHold.setOnClickListener { selectChallenge(ChallengeType.HOLD) }
+        chipRandom.setOnClickListener { selectRandomChallenge() }
         btnMainChallenge.setOnClickListener { openChallengeDialog() }
+
+        extraChallengesToggle.setOnClickListener { toggleExtraChallenges() }
         
         switchCare.setOnCheckedChangeListener { _, isChecked ->
             isEnabled = isChecked
@@ -247,9 +276,75 @@ class EditAlarmActivity : AppCompatActivity() {
         updateChallengeUI()
     }
 
+    private fun selectRandomChallenge() {
+        val pool = listOf(
+            ChallengeType.SNAKE,
+            ChallengeType.DOTS,
+            ChallengeType.MATH,
+            ChallengeType.COLOR,
+            ChallengeType.SHAKE,
+            ChallengeType.HOLD
+        )
+        selectedChallenge = pool.random()
+        updateChallengeUI()
+    }
+
+    private fun toggleExtraChallenges() {
+        val expand = !isExtraChallengesExpanded
+        isExtraChallengesExpanded = expand
+
+        tvExtraChallengesLabel.visibility = if (expand) View.GONE else View.VISIBLE
+
+        val startHeight = extraChallengesContainer.height
+        if (expand) {
+            extraChallengesContainer.visibility = View.VISIBLE
+            extraChallengesContainer.alpha = 0f
+        }
+
+        extraChallengesContainer.measure(
+            View.MeasureSpec.makeMeasureSpec(extraChallengesContainer.width, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val targetHeight = if (expand) extraChallengesContainer.measuredHeight else 0
+
+        ValueAnimator.ofInt(startHeight, targetHeight).apply {
+            duration = 220L
+            addUpdateListener { animator ->
+                val value = animator.animatedValue as Int
+                extraChallengesContainer.layoutParams = extraChallengesContainer.layoutParams.apply {
+                    height = value
+                }
+                extraChallengesContainer.requestLayout()
+                if (expand) {
+                    extraChallengesContainer.alpha = (value.toFloat() / targetHeight.coerceAtLeast(1))
+                }
+            }
+            addListener(object : android.animation.AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    if (!expand) {
+                        extraChallengesContainer.visibility = View.GONE
+                    }
+                    extraChallengesContainer.layoutParams = extraChallengesContainer.layoutParams.apply {
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+                    extraChallengesContainer.alpha = 1f
+                }
+            })
+            start()
+        }
+
+        ivExtraToggle.animate()
+            .rotation(if (expand) 270f else 90f)
+            .setDuration(220L)
+            .start()
+    }
+
     private fun updateChallengeUI() {
         // Reset all chips
         listOf(chipSnake, chipDots, chipMath, chipColor).forEach { chip ->
+            chip.alpha = 0.5f
+        }
+        listOf(chipShake, chipHold, chipRandom).forEach { chip ->
             chip.alpha = 0.5f
         }
         
@@ -259,6 +354,8 @@ class EditAlarmActivity : AppCompatActivity() {
             ChallengeType.DOTS -> chipDots.alpha = 1f
             ChallengeType.MATH -> chipMath.alpha = 1f
             ChallengeType.COLOR -> chipColor.alpha = 1f
+            ChallengeType.SHAKE -> chipShake.alpha = 1f
+            ChallengeType.HOLD -> chipHold.alpha = 1f
             ChallengeType.NONE -> {}
             ChallengeType.TEXT -> {}
             ChallengeType.DATE -> {}
@@ -273,6 +370,8 @@ class EditAlarmActivity : AppCompatActivity() {
             ChallengeType.NONE -> R.drawable.ic_leaf to R.string.edit_morning_me
             ChallengeType.TEXT -> R.drawable.ic_leaf to R.string.edit_morning_me
             ChallengeType.DATE -> R.drawable.ic_leaf to R.string.edit_morning_me
+            ChallengeType.SHAKE -> R.drawable.ic_leaf to R.string.challenge_shake
+            ChallengeType.HOLD -> R.drawable.ic_leaf to R.string.challenge_hold
         }
         
         val icon = findViewById<android.widget.ImageView>(R.id.ivMainChallengeIcon)
@@ -287,22 +386,33 @@ class EditAlarmActivity : AppCompatActivity() {
             ChallengeType.SNAKE,
             ChallengeType.DOTS,
             ChallengeType.MATH,
-            ChallengeType.COLOR
+            ChallengeType.COLOR,
+            ChallengeType.SHAKE,
+            ChallengeType.HOLD,
+            null
         )
         val challenges = arrayOf(
             getString(R.string.edit_morning_me),
             getString(R.string.chip_snake),
             getString(R.string.chip_dots),
             getString(R.string.chip_math),
-            getString(R.string.chip_color)
+            getString(R.string.chip_color),
+            getString(R.string.challenge_shake),
+            getString(R.string.challenge_hold),
+            getString(R.string.challenge_random)
         )
         val initialIndex = challengeOrder.indexOf(selectedChallenge).coerceAtLeast(0)
         
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.edit_how_to_start)
             .setSingleChoiceItems(challenges, initialIndex) { dialog, which ->
-                selectedChallenge = challengeOrder.getOrElse(which) { ChallengeType.NONE }
-                updateChallengeUI()
+                val picked = challengeOrder.getOrNull(which)
+                if (picked == null) {
+                    selectRandomChallenge()
+                } else {
+                    selectedChallenge = picked
+                    updateChallengeUI()
+                }
                 dialog.dismiss()
             }
             .show()
@@ -409,12 +519,15 @@ class EditAlarmActivity : AppCompatActivity() {
         
         if (useSpinner) {
             // Dialog with spinners
-            val builder = AlertDialog.Builder(this)
+            val builder = MaterialAlertDialogBuilder(this, R.style.TimePickerTheme)
+            val pickerContext = android.view.ContextThemeWrapper(this, R.style.TimePickerTheme)
             val layout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
+                setBackgroundResource(R.drawable.bg_card_soft)
+                setPadding(16, 12, 16, 12)
             }
             
-            val hourPicker = NumberPicker(this).apply {
+            val hourPicker = NumberPicker(pickerContext).apply {
                 if (is24h) {
                     minValue = 0
                     maxValue = 23
@@ -425,17 +538,20 @@ class EditAlarmActivity : AppCompatActivity() {
                     value = ((selectedHour + 11) % 12) + 1
                 }
             }
-            val minPicker = NumberPicker(this).apply {
+            val minPicker = NumberPicker(pickerContext).apply {
                 minValue = 0
                 maxValue = 59
                 value = selectedMinute
             }
+
+            styleNumberPicker(hourPicker)
+            styleNumberPicker(minPicker)
             
             layout.addView(hourPicker)
             layout.addView(minPicker)
 
             val amPmPicker = if (!is24h) {
-                NumberPicker(this).apply {
+                NumberPicker(pickerContext).apply {
                     minValue = 0
                     maxValue = 1
                     displayedValues = arrayOf(getString(R.string.time_am), getString(R.string.time_pm))
@@ -444,6 +560,7 @@ class EditAlarmActivity : AppCompatActivity() {
             } else {
                 null
             }
+            amPmPicker?.let { styleNumberPicker(it) }
             amPmPicker?.let { layout.addView(it) }
             
             builder.setView(layout)
@@ -480,6 +597,20 @@ class EditAlarmActivity : AppCompatActivity() {
         }
     }
 
+    private fun styleNumberPicker(picker: NumberPicker) {
+        val textColor = getColor(R.color.purple_dark)
+        for (i in 0 until picker.childCount) {
+            val child = picker.getChildAt(i)
+            if (child is EditText) {
+                child.setTextColor(textColor)
+                child.setHintTextColor(textColor)
+            }
+        }
+
+        picker.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        picker.invalidate()
+    }
+
     private fun updateTimeDisplay() {
         tvTimeBig.text = formatTime(selectedHour, selectedMinute)
     }
@@ -506,7 +637,15 @@ class EditAlarmActivity : AppCompatActivity() {
         alarmId = intent.getIntExtra("alarm_id", -1)
         val timeMillis = intent.getLongExtra("time", System.currentTimeMillis())
         selectedDateMillis = intent.getLongExtra("date", -1L).let { if (it == -1L) null else it }
-        val cal = Calendar.getInstance().apply { timeInMillis = timeMillis }
+        val cal = if (alarmId == -1) {
+            Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 1)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+        } else {
+            Calendar.getInstance().apply { timeInMillis = timeMillis }
+        }
         selectedHour = cal.get(Calendar.HOUR_OF_DAY)
         selectedMinute = cal.get(Calendar.MINUTE)
 
@@ -526,19 +665,39 @@ class EditAlarmActivity : AppCompatActivity() {
         updateChallengeUI()
         updateCareText()
         updateDayUI()
+        updateTabUI(getActiveTabIndex())
         switchCare.isChecked = isEnabled
+    }
+
+    private fun getActiveTabIndex(): Int {
+        if (selectedDays.isEmpty()) return -1
+
+        val weekdays = setOf(
+            Calendar.MONDAY,
+            Calendar.TUESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.THURSDAY,
+            Calendar.FRIDAY
+        )
+        val weekends = setOf(Calendar.SATURDAY, Calendar.SUNDAY)
+        val everyday = weekdays + weekends
+
+        return when {
+            selectedDays == everyday -> 1
+            selectedDays == weekdays -> 0
+            selectedDays == weekends -> 2
+            else -> -1
+        }
     }
 
     private fun saveAlarm() {
         descriptionText = ""
-        val baseMillis = selectedDateMillis ?: System.currentTimeMillis()
-        val cal = Calendar.getInstance().apply {
-            timeInMillis = baseMillis
-            set(Calendar.HOUR_OF_DAY, selectedHour)
-            set(Calendar.MINUTE, selectedMinute)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
+        val cal = TimeLogic.calculateNextTrigger(
+            selectedHour,
+            selectedMinute,
+            selectedDays,
+            selectedDateMillis
+        )
         val resultIntent = Intent().apply {
             putExtra("alarm_id", alarmId)
             putExtra("time", cal.timeInMillis)

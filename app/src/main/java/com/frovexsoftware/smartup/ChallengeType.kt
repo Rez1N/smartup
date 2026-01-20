@@ -7,7 +7,9 @@ enum class ChallengeType {
     DOTS,
     MATH,
     DATE,
-    COLOR;
+    COLOR,
+    SHAKE,
+    HOLD;
 
     companion object {
         fun from(value: String?): ChallengeType {

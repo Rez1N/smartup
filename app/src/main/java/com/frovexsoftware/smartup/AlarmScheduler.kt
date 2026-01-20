@@ -84,17 +84,28 @@ object AlarmScheduler {
     }
 
     private fun requestExactAlarmPermission(activity: Activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestExactAlarmPermissionS(activity)
+        } else {
+            openAppDetails(activity)
+        }
+    }
+
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.S)
+    private fun requestExactAlarmPermissionS(activity: Activity) {
         val intent = Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
             data = android.net.Uri.parse("package:${activity.packageName}")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         runCatching { activity.startActivity(intent) }
-            .onFailure {
-                val fallback = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = android.net.Uri.parse("package:${activity.packageName}")
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                runCatching { activity.startActivity(fallback) }
-            }
+            .onFailure { openAppDetails(activity) }
+    }
+
+    private fun openAppDetails(activity: Activity) {
+        val fallback = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = android.net.Uri.parse("package:${activity.packageName}")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        runCatching { activity.startActivity(fallback) }
     }
 }

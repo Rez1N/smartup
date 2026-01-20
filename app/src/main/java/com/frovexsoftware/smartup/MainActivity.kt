@@ -1,11 +1,13 @@
 package com.frovexsoftware.smartup
 
 import android.app.Activity
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Gravity
+import android.os.Build
 import android.view.View
 import android.widget.Toast
 import android.text.SpannableString
@@ -17,6 +19,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.frovexsoftware.smartup.databinding.ActivityMainBinding
 import java.util.ArrayList
@@ -29,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private val defaultThemeMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     private val alarms = mutableListOf<AlarmData>()
+    private val notificationPermissionRequestCode = 1001
 
     private val editAlarmLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
@@ -46,9 +52,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         updateLocalizedTexts()
+        ensureNotificationPermission()
 
         setupSettingsPanel()
-        binding.btnSettings.setOnClickListener { binding.drawerLayout.openDrawer(Gravity.END) }
+        binding.btnSettings.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.END) }
         binding.btnAiAgent.setOnClickListener { openAiAgent() }
         binding.btnAddAlarm.setOnClickListener { openCreateAlarm() }
 
@@ -88,6 +95,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun openAiAgent() {
         startActivity(Intent(this, AiAgentActivity::class.java))
+    }
+
+    private fun ensureNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(permission), notificationPermissionRequestCode)
+            }
+        }
     }
 
     private fun scheduleAlarm(item: AlarmData) {
@@ -205,6 +221,8 @@ class MainActivity : AppCompatActivity() {
                 ChallengeType.DOTS -> R.drawable.ic_challenge_dots to R.string.chip_dots
                 ChallengeType.MATH -> R.drawable.ic_challenge_math to R.string.chip_math
                 ChallengeType.COLOR -> R.drawable.ic_challenge_color to R.string.chip_color
+                ChallengeType.SHAKE -> R.drawable.ic_leaf to R.string.challenge_shake
+                ChallengeType.HOLD -> R.drawable.ic_leaf to R.string.challenge_hold
                 else -> R.drawable.ic_leaf to R.string.edit_morning_me
             }
             ivChallengeIcon.setImageResource(iconRes)
@@ -409,7 +427,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, if (checked) getString(R.string.time_picker_style_spinner) else getString(R.string.time_picker_style_clock), Toast.LENGTH_SHORT).show()
         }
 
-        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START)
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
     }
 
     private fun formatTime(hour24: Int, minute: Int): CharSequence {

@@ -1,7 +1,7 @@
 <resources>
-    <style name="TimePickerTheme" parent="Theme.MaterialComponents.Light.Dialog">
-        <item name="colorControlNormal">@color/purple_dark</item>
-        <item name="android:textColorPrimary">@color/purple_dark</item>
+    <style name="TimePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textSize">32sp</item>
     </style>
 </resources>
