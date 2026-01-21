@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId = "com.frovexsoftware.smartup"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
