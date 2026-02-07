@@ -81,4 +81,6 @@ dependencies {
     testImplementation("androidx.fragment:fragment-testing:1.6.2")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.test.core.ktx)
+    androidTestImplementation(libs.androidx.test.rules)
 }

@@ -2,33 +2,69 @@ package com.frovexsoftware.smartup
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 
 /**
  * Simple singleton to play/stop alarm ringtone with fallbacks.
  */
 object AlarmPlayer {
     private var ringtone: Ringtone? = null
+    private var mediaPlayer: MediaPlayer? = null
 
     fun start(context: Context) {
         val appContext = context.applicationContext
-        if (ringtone?.isPlaying == true) return
+        if (ringtone?.isPlaying == true || mediaPlayer?.isPlaying == true) return
 
         val uri = pickAlarmUri()
-        ringtone = RingtoneManager.getRingtone(appContext, uri)?.apply {
-            audioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-            play()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ringtone = RingtoneManager.getRingtone(appContext, uri)?.apply {
+                audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+                isLooping = true
+                play()
+            }
+        } else {
+            try {
+                mediaPlayer = MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build()
+                    )
+                    setDataSource(appContext, uri)
+                    isLooping = true
+                    prepare()
+                    start()
+                }
+            } catch (e: Exception) {
+                mediaPlayer?.release()
+                mediaPlayer = null
+                ringtone = RingtoneManager.getRingtone(appContext, uri)?.apply {
+                    audioAttributes = AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                    play()
+                }
+            }
         }
     }
 
     fun stop() {
         ringtone?.stop()
         ringtone = null
+        mediaPlayer?.run {
+            stop()
+            release()
+        }
+        mediaPlayer = null
     }
 
     private fun pickAlarmUri(): Uri {

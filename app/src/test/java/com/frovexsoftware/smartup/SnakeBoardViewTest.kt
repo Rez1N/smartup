@@ -8,8 +8,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
+@Config(sdk = [34])
 class SnakeBoardViewTest {
 
     private lateinit var snakeBoardView: SnakeBoardView
@@ -24,22 +26,25 @@ class SnakeBoardViewTest {
         snakeBoardView.setDirection(SnakeBoardView.Direction.UP)
         snakeBoardView.update()
         snakeBoardView.reset()
-        assertEquals(Pair(10, 10), snakeBoardView.snake.first)
+        val center = snakeBoardView.boardSize / 2
+        assertEquals(Pair(center, center), snakeBoardView.snake.first())
         assertEquals(1, snakeBoardView.snake.size)
     }
 
     @Test
     fun testUpdate() {
-        val initialHead = snakeBoardView.snake.first
+        val initialHead = snakeBoardView.snake.first()
         snakeBoardView.update()
-        val newHead = snakeBoardView.snake.first
+        val newHead = snakeBoardView.snake.first()
         assertNotEquals(initialHead, newHead)
     }
 
     @Test
     fun testSetDirection() {
+        val start = snakeBoardView.snake.first()
         snakeBoardView.setDirection(SnakeBoardView.Direction.UP)
         snakeBoardView.update()
-        assertEquals(Pair(10, 9), snakeBoardView.snake.first)
+        val expected = Pair(start.first, (start.second - 1 + snakeBoardView.boardSize) % snakeBoardView.boardSize)
+        assertEquals(expected, snakeBoardView.snake.first())
     }
 }

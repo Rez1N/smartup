@@ -29,6 +29,8 @@ class SnakeChallengeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.snakeBoard.reset()
+
         binding.btnSnakeUp.setOnClickListener { binding.snakeBoard.setDirection(SnakeBoardView.Direction.UP) }
         binding.btnSnakeDown.setOnClickListener { binding.snakeBoard.setDirection(SnakeBoardView.Direction.DOWN) }
         binding.btnSnakeLeft.setOnClickListener { binding.snakeBoard.setDirection(SnakeBoardView.Direction.LEFT) }

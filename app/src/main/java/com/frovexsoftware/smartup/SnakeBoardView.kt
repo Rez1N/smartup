@@ -14,11 +14,11 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
 
     private val paint = Paint()
     internal val snake = LinkedList<Pair<Int, Int>>()
-    private var food = Pair(0, 0)
+    private var food = Pair(-1, -1)
     private var direction = Direction.RIGHT
     private var score = 0
 
-    private val boardSize = 12
+    internal val boardSize = 12
     private var cellSize = 0f
     private var offsetX = 0f
     private var offsetY = 0f
@@ -36,7 +36,7 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
     fun reset() {
         snake.clear()
         snake.add(Pair(boardSize / 2, boardSize / 2))
-        generateFood()
+        ensureFood()
         direction = Direction.RIGHT
         score = 0
         invalidate()
@@ -48,7 +48,8 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
     }
 
     fun update() {
-        val head = snake.first
+        ensureFood()
+        val head = snake.first()
         val newHeadRaw = when (direction) {
             Direction.UP -> Pair(head.first, head.second - 1)
             Direction.DOWN -> Pair(head.first, head.second + 1)
@@ -79,6 +80,16 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
             snake.removeLast()
         }
         invalidate()
+    }
+
+    private fun ensureFood() {
+        if (food.first !in 0 until boardSize || food.second !in 0 until boardSize) {
+            generateFood()
+            return
+        }
+        if (snake.contains(food)) {
+            generateFood()
+        }
     }
 
     private fun generateFood() {
