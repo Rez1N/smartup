@@ -1,5 +1,6 @@
 package com.frovexsoftware.smartup
 
+import com.frovexsoftware.smartup.challenge.DateChallengeFragment
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

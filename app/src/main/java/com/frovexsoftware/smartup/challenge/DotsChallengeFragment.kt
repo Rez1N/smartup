@@ -1,12 +1,13 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
 import com.frovexsoftware.smartup.databinding.FragmentDotsChallengeBinding
-import com.frovexsoftware.smartup.PatternLockView.OnPatternCompleteListener
+import com.frovexsoftware.smartup.challenge.view.PatternLockView.OnPatternCompleteListener
 
 class DotsChallengeFragment : Fragment() {
     private var _binding: FragmentDotsChallengeBinding? = null
@@ -83,7 +84,7 @@ class DotsChallengeFragment : Fragment() {
     private fun handlePatternComplete(pattern: List<Int>) {
         if (pattern == targetPattern.sequence) {
             binding.tvDotsError.text = getString(R.string.dots_pattern_complete)
-            (activity as? StopAlarmActivity)?.onChallengeCompleted()
+            (activity as? ChallengeCallback)?.onChallengeCompleted()
         } else {
             binding.tvDotsError.text = getString(R.string.dots_wrong_pattern)
             binding.patternView.resetUserPattern()

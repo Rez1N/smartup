@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -187,8 +187,9 @@ class PatternLockView @JvmOverloads constructor(
     }
 
     private fun findNode(x: Float, y: Float): Int? {
+        val touchRadius = haloRadius.coerceAtLeast(nodeRadius * 3f)
         nodes.forEachIndexed { index, point ->
-            if (hypot((x - point.x).toDouble(), (y - point.y).toDouble()) <= nodeRadius * 1.6f) {
+            if (hypot((x - point.x).toDouble(), (y - point.y).toDouble()) <= touchRadius) {
                 return index
             }
         }

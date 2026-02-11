@@ -1,5 +1,6 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.alarm
 
+import com.frovexsoftware.smartup.challenge.ChallengeType
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -27,18 +28,17 @@ data class AlarmData(
 
     companion object {
         fun fromJson(obj: JSONObject): AlarmData {
-            val id = obj.getInt("id")
-            val time = obj.getLong("time")
-            val dateMillis = if (obj.isNull("date")) null else obj.getLong("date")
-            val enabled = obj.optBoolean("enabled", true)
-            val description = obj.optString("description", "")
-            val challengeType = obj.optString("challenge_type", ChallengeType.NONE.name)
             val weekdaysJson = obj.optJSONArray("weekdays") ?: JSONArray()
-            val weekdaysSet = mutableSetOf<Int>()
-            for (j in 0 until weekdaysJson.length()) {
-                weekdaysSet.add(weekdaysJson.getInt(j))
-            }
-            return AlarmData(id, time, weekdaysSet, dateMillis, enabled, description, challengeType)
+            val weekdays = (0 until weekdaysJson.length()).map { weekdaysJson.getInt(it) }.toSet()
+            return AlarmData(
+                id = obj.getInt("id"),
+                timeInMillis = obj.getLong("time"),
+                weekdays = weekdays,
+                dateMillis = if (obj.isNull("date")) null else obj.getLong("date"),
+                enabled = obj.optBoolean("enabled", true),
+                description = obj.optString("description", ""),
+                challengeType = obj.optString("challenge_type", ChallengeType.NONE.name)
+            )
         }
     }
 }

@@ -28,7 +28,7 @@
         app:strokeColor="@color/alarm_text_secondary"
         app:strokeWidth="1dp">
 
-        <com.frovexsoftware.smartup.SnakeBoardView
+        <com.frovexsoftware.smartup.challenge.view.SnakeBoardView
             android:id="@+id/snakeBoard"
             android:layout_width="320dp"
             android:layout_height="320dp"

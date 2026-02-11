@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.util
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
@@ -7,10 +7,6 @@ import androidx.core.os.LocaleListCompat
 object LocaleHelper {
     private const val PREFS_NAME = "alarm_prefs"
     private const val KEY_LANG = "app_lang"
-
-    fun wrap(base: Context): Context {
-        return base
-    }
 
     fun getSavedLanguage(context: Context): String? {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.ui
 
 import android.app.TimePickerDialog
 import android.content.Context
@@ -6,10 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.NumberPicker
@@ -21,10 +17,22 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.button.MaterialButton
+import com.frovexsoftware.smartup.R
+import com.frovexsoftware.smartup.alarm.TimeLogic
+import com.frovexsoftware.smartup.challenge.ChallengeType
+import com.frovexsoftware.smartup.util.TimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
 class EditAlarmActivity : AppCompatActivity() {
+
+    companion object {
+        /** Ordered Mon..Sun mapping from UI index (0..6) to Calendar constants. */
+        private val CALENDAR_DAYS = listOf(
+            Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
+            Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY
+        )
+    }
 
     private lateinit var tvTimeBig: TextView
     private lateinit var timeSpinnerContainer: LinearLayout
@@ -98,37 +106,9 @@ class EditAlarmActivity : AppCompatActivity() {
 
         // Localized weekday names
         val dfs = java.text.DateFormatSymbols(resources.configuration.locales[0])
-        val weekDayNames = listOf(
-            dfs.shortWeekdays[Calendar.MONDAY],
-            dfs.shortWeekdays[Calendar.TUESDAY],
-            dfs.shortWeekdays[Calendar.WEDNESDAY],
-            dfs.shortWeekdays[Calendar.THURSDAY],
-            dfs.shortWeekdays[Calendar.FRIDAY],
-            dfs.shortWeekdays[Calendar.SATURDAY],
-            dfs.shortWeekdays[Calendar.SUNDAY]
-        )
-        val calendarDays = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY,
-            Calendar.SATURDAY,
-            Calendar.SUNDAY
-        )
         dayViews.forEach { (index, view) ->
-            val calendarDay = calendarDays.getOrNull(index) ?: Calendar.MONDAY
-            val nameIndex = when (calendarDay) {
-                Calendar.MONDAY -> 0
-                Calendar.TUESDAY -> 1
-                Calendar.WEDNESDAY -> 2
-                Calendar.THURSDAY -> 3
-                Calendar.FRIDAY -> 4
-                Calendar.SATURDAY -> 5
-                Calendar.SUNDAY -> 6
-                else -> 0
-            }
-            view.text = weekDayNames[nameIndex]
+            val calendarDay = CALENDAR_DAYS.getOrElse(index) { Calendar.MONDAY }
+            view.text = dfs.shortWeekdays[calendarDay]
         }
 
         // Localize all static UI texts
@@ -362,22 +342,10 @@ class EditAlarmActivity : AppCompatActivity() {
         }
         
         // Update main button text and icon
-        val (iconRes, labelRes) = when (selectedChallenge) {
-            ChallengeType.SNAKE -> R.drawable.ic_challenge_snake to R.string.chip_snake
-            ChallengeType.DOTS -> R.drawable.ic_challenge_dots to R.string.chip_dots
-            ChallengeType.MATH -> R.drawable.ic_challenge_math to R.string.chip_math
-            ChallengeType.COLOR -> R.drawable.ic_challenge_color to R.string.chip_color
-            ChallengeType.NONE -> R.drawable.ic_leaf to R.string.edit_morning_me
-            ChallengeType.TEXT -> R.drawable.ic_leaf to R.string.edit_morning_me
-            ChallengeType.DATE -> R.drawable.ic_leaf to R.string.edit_morning_me
-            ChallengeType.SHAKE -> R.drawable.ic_challenge_shake to R.string.challenge_shake
-            ChallengeType.HOLD -> R.drawable.ic_challenge_hold to R.string.challenge_hold
-        }
-        
         val icon = findViewById<android.widget.ImageView>(R.id.ivMainChallengeIcon)
         val text = findViewById<TextView>(R.id.tvMainChallengeText)
-        icon.setImageResource(iconRes)
-        text.text = getString(labelRes)
+        icon.setImageResource(selectedChallenge.iconRes)
+        text.text = getString(selectedChallenge.labelRes)
     }
 
     private fun openChallengeDialog() {
@@ -444,16 +412,7 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun toggleDaySelection(dayIndex: Int) {
-        val calendarDay = when (dayIndex) {
-            0 -> Calendar.MONDAY
-            1 -> Calendar.TUESDAY
-            2 -> Calendar.WEDNESDAY
-            3 -> Calendar.THURSDAY
-            4 -> Calendar.FRIDAY
-            5 -> Calendar.SATURDAY
-            6 -> Calendar.SUNDAY
-            else -> Calendar.MONDAY
-        }
+        val calendarDay = CALENDAR_DAYS.getOrElse(dayIndex) { Calendar.MONDAY }
         selectedDays = if (calendarDay in selectedDays) {
             selectedDays - calendarDay
         } else {
@@ -464,18 +423,8 @@ class EditAlarmActivity : AppCompatActivity() {
     }
 
     private fun updateDayUI() {
-        // Use color change instead of alpha for selection
         dayViews.forEach { (index, view) ->
-            val calendarDay = when (index) {
-                0 -> Calendar.MONDAY
-                1 -> Calendar.TUESDAY
-                2 -> Calendar.WEDNESDAY
-                3 -> Calendar.THURSDAY
-                4 -> Calendar.FRIDAY
-                5 -> Calendar.SATURDAY
-                6 -> Calendar.SUNDAY
-                else -> Calendar.MONDAY
-            }
+            val calendarDay = CALENDAR_DAYS.getOrElse(index) { Calendar.MONDAY }
             if (calendarDay in selectedDays) {
                 view.setBackgroundResource(R.drawable.bg_day_circle_active)
                 view.setTextColor(getColor(R.color.white))
@@ -523,8 +472,9 @@ class EditAlarmActivity : AppCompatActivity() {
             val pickerContext = android.view.ContextThemeWrapper(this, R.style.TimePickerTheme)
             val layout = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
+                val dp = resources.displayMetrics.density
                 setBackgroundResource(R.drawable.bg_card_soft)
-                setPadding(16, 12, 16, 12)
+                setPadding((16 * dp).toInt(), (12 * dp).toInt(), (16 * dp).toInt(), (12 * dp).toInt())
             }
             
             val hourPicker = NumberPicker(pickerContext).apply {
@@ -617,20 +567,7 @@ class EditAlarmActivity : AppCompatActivity() {
 
     private fun formatTime(hour24: Int, minute: Int): CharSequence {
         val is24 = prefs.getBoolean("is24h", true)
-        return if (is24) {
-            "%02d:%02d".format(hour24, minute)
-        } else {
-            val hour12 = ((hour24 + 11) % 12) + 1
-            val suffix = if (hour24 >= 12) getString(R.string.time_pm) else getString(R.string.time_am)
-            val text = "%d:%02d %s".format(hour12, minute, suffix)
-            val spannable = SpannableString(text)
-            val suffixStart = text.lastIndexOf(' ') + 1
-            if (suffixStart in 1 until text.length) {
-                spannable.setSpan(RelativeSizeSpan(0.7f), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannable.setSpan(ForegroundColorSpan(getColor(R.color.purple_medium)), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            spannable
-        }
+        return TimeFormatter.format(this, hour24, minute, is24)
     }
 
     private fun loadAlarmData() {

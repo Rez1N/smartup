@@ -1,5 +1,6 @@
 package com.frovexsoftware.smartup
 
+import com.frovexsoftware.smartup.alarm.TimeLogic
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Calendar

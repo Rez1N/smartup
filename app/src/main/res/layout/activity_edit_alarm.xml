@@ -142,7 +142,7 @@
                         app:tint="@color/purple_medium"/> 
                 </LinearLayout>
 
-                <!-- Chips Row 1 -->
+                <!-- Chips Row 1: Snake, Dots -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -197,6 +197,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- Hidden until expanded -->
                 <LinearLayout
                     android:id="@+id/extraChallengesContainer"
                     android:layout_width="match_parent"
@@ -205,10 +206,66 @@
                     android:layout_marginTop="6dp"
                     android:visibility="gone">
 
+                    <!-- Row: Math, Color -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+                        <LinearLayout
+                            android:id="@+id/chipMath"
+                            android:layout_width="0dp"
+                            android:layout_height="28dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tab_inactive"
+                            android:gravity="center"
+                            android:layout_marginEnd="6dp">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_challenge_math"
+                                app:tint="@color/purple_dark"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/chip_math"
+                                android:textSize="9sp"
+                                android:textColor="@color/purple_dark"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:layout_marginStart="4dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/chipColor"
+                            android:layout_width="0dp"
+                            android:layout_height="28dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tab_inactive"
+                            android:gravity="center"
+                            android:layout_marginStart="6dp">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_challenge_color"
+                                app:tint="@color/purple_dark"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/chip_color"
+                                android:textSize="9sp"
+                                android:textColor="@color/purple_dark"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                android:layout_marginStart="4dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Row: Shake, Hold -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
 
                         <LinearLayout
                             android:id="@+id/chipShake"
@@ -259,6 +316,7 @@
                         </LinearLayout>
                     </LinearLayout>
 
+                    <!-- Random -->
                     <LinearLayout
                         android:id="@+id/chipRandom"
                         android:layout_width="match_parent"
@@ -282,62 +340,8 @@
                             android:layout_marginStart="4dp" />
                     </LinearLayout>
                 </LinearLayout>
-                
-                 <!-- Chips Row 2 -->
-                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                          android:layout_marginTop="4dp">
-                     <LinearLayout
-                        android:id="@+id/chipMath"
-                        android:layout_width="0dp"
-                                android:layout_height="28dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_tab_inactive"
-                        android:gravity="center"
-                        android:layout_marginEnd="6dp">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_challenge_math"
-                            app:tint="@color/purple_dark"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/chip_math"
-                            android:textSize="9sp"
-                            android:textColor="@color/purple_dark"
-                            android:singleLine="true"
-                            android:ellipsize="end"
-                            android:layout_marginStart="4dp"/>
-                    </LinearLayout>
-                    
-                    <LinearLayout
-                        android:id="@+id/chipColor"
-                        android:layout_width="0dp"
-                        android:layout_height="28dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_tab_inactive"
-                        android:gravity="center"
-                        android:layout_marginStart="6dp">
-                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_challenge_color"
-                            app:tint="@color/purple_dark"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/chip_color"
-                            android:textSize="9sp"
-                            android:textColor="@color/purple_dark"
-                            android:singleLine="true"
-                            android:ellipsize="end"
-                            android:layout_marginStart="4dp"/>
-                    </LinearLayout>
-                </LinearLayout>
 
+                <!-- Extra challenges toggle (always at bottom) -->
                 <LinearLayout
                     android:id="@+id/extraChallengesToggle"
                     android:layout_width="wrap_content"

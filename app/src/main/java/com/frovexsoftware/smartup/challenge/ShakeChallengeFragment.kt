@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.content.Context
 import android.hardware.Sensor
@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
 import kotlin.math.sqrt
 
 class ShakeChallengeFragment : Fragment(), SensorEventListener {
@@ -69,7 +70,7 @@ class ShakeChallengeFragment : Fragment(), SensorEventListener {
             shakeCount += 1
             updateCounter()
             if (shakeCount >= REQUIRED_SHAKES) {
-                (activity as? StopAlarmActivity)?.onChallengeCompleted()
+                (activity as? ChallengeCallback)?.onChallengeCompleted()
             }
         }
     }

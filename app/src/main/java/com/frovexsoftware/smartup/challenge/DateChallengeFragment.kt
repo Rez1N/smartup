@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -30,7 +31,7 @@ class DateChallengeFragment : Fragment() {
 
         submitButton.setOnClickListener {
             if (isCorrect(answerEditText.text.toString())) {
-                (activity as? StopAlarmActivity)?.onChallengeCompleted()
+                (activity as? ChallengeCallback)?.onChallengeCompleted()
             }
         }
 

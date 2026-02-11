@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.graphics.Color
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
 import java.text.Normalizer
 import java.util.Locale
 import java.util.Random
@@ -60,7 +61,7 @@ class ColorChallengeFragment : Fragment() {
 
         submitButton.setOnClickListener {
             if (isCorrect(answerEditText.text.toString())) {
-                (activity as? StopAlarmActivity)?.onChallengeCompleted()
+                (activity as? ChallengeCallback)?.onChallengeCompleted()
             }
         }
 

@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.alarm
 
 import android.content.BroadcastReceiver
 import android.content.Context

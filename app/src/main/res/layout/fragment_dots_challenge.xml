@@ -53,7 +53,7 @@
         app:strokeColor="@color/alarm_text_secondary"
         app:strokeWidth="1dp">
 
-        <com.frovexsoftware.smartup.PatternLockView
+        <com.frovexsoftware.smartup.challenge.view.PatternLockView
             android:id="@+id/patternView"
             android:layout_width="300dp"
             android:layout_height="300dp" />
