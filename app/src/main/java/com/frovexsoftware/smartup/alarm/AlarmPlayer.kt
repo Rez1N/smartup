@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.alarm
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -15,6 +15,11 @@ object AlarmPlayer {
     private var ringtone: Ringtone? = null
     private var mediaPlayer: MediaPlayer? = null
 
+    private val alarmAudioAttributes = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_ALARM)
+        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+        .build()
+
     fun start(context: Context) {
         val appContext = context.applicationContext
         if (ringtone?.isPlaying == true || mediaPlayer?.isPlaying == true) return
@@ -22,22 +27,14 @@ object AlarmPlayer {
         val uri = pickAlarmUri()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             ringtone = RingtoneManager.getRingtone(appContext, uri)?.apply {
-                audioAttributes = AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build()
+                audioAttributes = alarmAudioAttributes
                 isLooping = true
                 play()
             }
         } else {
             try {
                 mediaPlayer = MediaPlayer().apply {
-                    setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            .build()
-                    )
+                    setAudioAttributes(alarmAudioAttributes)
                     setDataSource(appContext, uri)
                     isLooping = true
                     prepare()
@@ -47,10 +44,7 @@ object AlarmPlayer {
                 mediaPlayer?.release()
                 mediaPlayer = null
                 ringtone = RingtoneManager.getRingtone(appContext, uri)?.apply {
-                    audioAttributes = AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build()
+                    audioAttributes = alarmAudioAttributes
                     play()
                 }
             }

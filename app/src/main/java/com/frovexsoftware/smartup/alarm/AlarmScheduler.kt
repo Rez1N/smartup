@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.alarm
 
 import android.app.Activity
 import android.app.AlarmManager
@@ -53,20 +53,20 @@ object AlarmScheduler {
 
     fun rescheduleAll(context: Context, alarms: List<AlarmData>) {
         alarms.filter { it.enabled }.forEach { alarm ->
-            // Ensure stored time aligns to next trigger considering date/weekdays if present.
-            val recomputed = recomputeNextTrigger(alarm)
-            alarm.timeInMillis = recomputed.timeInMillis
+            recomputeNextTrigger(alarm)
             schedule(context, alarm, promptExactPermission = false)
         }
     }
 
-    private fun recomputeNextTrigger(alarm: AlarmData): AlarmData {
+    private fun recomputeNextTrigger(alarm: AlarmData) {
         val cal = Calendar.getInstance().apply { timeInMillis = alarm.timeInMillis }
-        val hour = cal.get(Calendar.HOUR_OF_DAY)
-        val minute = cal.get(Calendar.MINUTE)
-        val next = TimeLogic.calculateNextTrigger(hour, minute, alarm.weekdays, alarm.dateMillis)
+        val next = TimeLogic.calculateNextTrigger(
+            cal.get(Calendar.HOUR_OF_DAY),
+            cal.get(Calendar.MINUTE),
+            alarm.weekdays,
+            alarm.dateMillis
+        )
         alarm.timeInMillis = next.timeInMillis
-        return alarm
     }
 
     private fun buildPendingIntent(context: Context, alarm: AlarmData): PendingIntent {

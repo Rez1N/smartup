@@ -1,12 +1,8 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.alarm
 
 import java.util.Calendar
 
 object TimeLogic {
-
-    fun calculateTriggerTime(hour: Int, minute: Int): Calendar {
-        return calculateNextTrigger(hour, minute, emptySet(), null)
-    }
 
     /**
      * Рассчитывает ближайшее время будильника с учётом выбранных дней недели и опциональной даты.

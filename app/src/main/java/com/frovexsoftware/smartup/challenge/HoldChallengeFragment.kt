@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
 
 class HoldChallengeFragment : Fragment() {
 
@@ -28,7 +29,7 @@ class HoldChallengeFragment : Fragment() {
             progress.progress = percent
             if (elapsed >= HOLD_DURATION_MS) {
                 running = false
-                (activity as? StopAlarmActivity)?.onChallengeCompleted()
+                (activity as? ChallengeCallback)?.onChallengeCompleted()
                 return
             }
             handler.postDelayed(this, 16L)
@@ -59,6 +60,11 @@ class HoldChallengeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        cancelHold()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         cancelHold()
     }
 

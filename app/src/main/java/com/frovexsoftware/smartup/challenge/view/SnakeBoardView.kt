@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -17,6 +17,7 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
     private var food = Pair(-1, -1)
     private var direction = Direction.RIGHT
     private var score = 0
+    private val random = Random()
 
     internal val boardSize = 12
     private var cellSize = 0f
@@ -93,7 +94,6 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
     }
 
     private fun generateFood() {
-        val random = Random()
         do {
             food = Pair(random.nextInt(boardSize), random.nextInt(boardSize))
         } while (snake.contains(food))

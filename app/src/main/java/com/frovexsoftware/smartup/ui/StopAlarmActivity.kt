@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.ui
 
 import android.os.Bundle
 import android.os.Build
@@ -6,8 +6,22 @@ import android.view.WindowManager
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
+import com.frovexsoftware.smartup.R
+import com.frovexsoftware.smartup.alarm.AlarmData
+import com.frovexsoftware.smartup.alarm.AlarmNotifier
+import com.frovexsoftware.smartup.alarm.AlarmPlayer
+import com.frovexsoftware.smartup.alarm.AlarmScheduler
+import com.frovexsoftware.smartup.challenge.ChallengeCallback
+import com.frovexsoftware.smartup.challenge.ChallengeType
+import com.frovexsoftware.smartup.challenge.ColorChallengeFragment
+import com.frovexsoftware.smartup.challenge.DateChallengeFragment
+import com.frovexsoftware.smartup.challenge.DotsChallengeFragment
+import com.frovexsoftware.smartup.challenge.HoldChallengeFragment
+import com.frovexsoftware.smartup.challenge.MathChallengeFragment
+import com.frovexsoftware.smartup.challenge.ShakeChallengeFragment
+import com.frovexsoftware.smartup.challenge.SnakeChallengeFragment
 
-open class StopAlarmActivity : AppCompatActivity() {
+open class StopAlarmActivity : AppCompatActivity(), ChallengeCallback {
 
     private lateinit var noChallengeContainer: View
     private lateinit var fragmentContainer: View
@@ -65,7 +79,7 @@ open class StopAlarmActivity : AppCompatActivity() {
         }
     }
 
-    open fun onChallengeCompleted() {
+    override fun onChallengeCompleted() {
         AlarmPlayer.stop()
         AlarmNotifier.stop(this)
         finish()

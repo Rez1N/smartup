@@ -7,6 +7,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import com.frovexsoftware.smartup.challenge.ChallengeType
+import com.frovexsoftware.smartup.ui.StopAlarmActivity
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -65,7 +67,7 @@ class StopAlarmActivityInstrumentedTest {
 
     private fun launchWithChallenge(type: ChallengeType) {
         val intent = Intent(Intent.ACTION_MAIN).apply {
-            setClassName("com.frovexsoftware.smartup", "com.frovexsoftware.smartup.StopAlarmActivity")
+            setClassName("com.frovexsoftware.smartup", "com.frovexsoftware.smartup.ui.StopAlarmActivity")
             putExtra("alarm_id", 1)
             putExtra("challenge_type", type.name)
         }

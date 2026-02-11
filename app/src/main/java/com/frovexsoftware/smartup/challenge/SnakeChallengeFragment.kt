@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.os.Bundle
 import android.os.Handler
@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
+import com.frovexsoftware.smartup.challenge.view.SnakeBoardView
 import com.frovexsoftware.smartup.databinding.FragmentSnakeChallengeBinding
 
 class SnakeChallengeFragment : Fragment() {
@@ -37,7 +39,7 @@ class SnakeChallengeFragment : Fragment() {
         binding.btnSnakeRight.setOnClickListener { binding.snakeBoard.setDirection(SnakeBoardView.Direction.RIGHT) }
 
         binding.snakeBoard.onGameWon = {
-            (activity as? StopAlarmActivity)?.onChallengeCompleted()
+            (activity as? ChallengeCallback)?.onChallengeCompleted()
         }
 
         runnable = Runnable {
@@ -62,6 +64,7 @@ class SnakeChallengeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        handler.removeCallbacks(runnable)
         _binding = null
     }
 }

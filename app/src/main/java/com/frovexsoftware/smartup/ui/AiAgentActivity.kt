@@ -1,7 +1,8 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.frovexsoftware.smartup.R
 
 class AiAgentActivity : AppCompatActivity() {
 

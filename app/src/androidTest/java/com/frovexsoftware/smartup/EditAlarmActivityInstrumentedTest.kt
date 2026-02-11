@@ -8,6 +8,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import com.frovexsoftware.smartup.challenge.ChallengeType
+import com.frovexsoftware.smartup.ui.EditAlarmActivity
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.ArrayList
@@ -18,7 +20,7 @@ class EditAlarmActivityInstrumentedTest {
     @Test
     fun openEditAlarmAndToggleChallenges() {
         val intent = Intent(Intent.ACTION_MAIN).apply {
-            setClassName("com.frovexsoftware.smartup", "com.frovexsoftware.smartup.EditAlarmActivity")
+            setClassName("com.frovexsoftware.smartup", "com.frovexsoftware.smartup.ui.EditAlarmActivity")
             putExtra("alarm_id", -1)
             putExtra("time", System.currentTimeMillis())
             putExtra("date", -1L)

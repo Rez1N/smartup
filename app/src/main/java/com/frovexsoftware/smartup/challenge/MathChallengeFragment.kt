@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.challenge
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.frovexsoftware.smartup.R
 import java.util.Random
 
 class MathChallengeFragment : Fragment() {
@@ -36,7 +37,7 @@ class MathChallengeFragment : Fragment() {
         submitButton.setOnClickListener {
             val userAnswer = answerEditText.text.toString().toIntOrNull()
             if (userAnswer == correctAnswer) {
-                (activity as? StopAlarmActivity)?.onChallengeCompleted()
+                (activity as? ChallengeCallback)?.onChallengeCompleted()
             }
         }
 

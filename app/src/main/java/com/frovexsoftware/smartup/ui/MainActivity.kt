@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.ui
 
 import android.app.Activity
 import android.Manifest
@@ -10,11 +10,6 @@ import android.os.Bundle
 import android.os.Build
 import android.view.View
 import android.widget.Toast
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import java.text.DateFormatSymbols
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -23,10 +18,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.frovexsoftware.smartup.R
+import com.frovexsoftware.smartup.alarm.AlarmData
+import com.frovexsoftware.smartup.alarm.AlarmScheduler
+import com.frovexsoftware.smartup.alarm.AlarmStorage
+import com.frovexsoftware.smartup.challenge.ChallengeType
 import com.frovexsoftware.smartup.databinding.ActivityMainBinding
-import java.util.ArrayList
+import com.frovexsoftware.smartup.util.LocaleHelper
+import com.frovexsoftware.smartup.util.TimeFormatter
 import java.util.Calendar
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,11 +65,6 @@ class MainActivity : AppCompatActivity() {
             saveAlarms()
         }
         renderAlarms()
-        if (alarms.isEmpty()) {
-            hideAlarmInfo()
-        } else {
-            showAlarmInfo()
-        }
     }
 
     override fun onResume() {
@@ -114,13 +109,6 @@ class MainActivity : AppCompatActivity() {
         AlarmScheduler.cancel(this, item)
     }
 
-    private fun cancelAlarm(item: AlarmData) {
-        cancelScheduledAlarm(item)
-        alarms.removeAll { it.id == item.id }
-        saveAlarms()
-        renderAlarms()
-    }
-
     private fun addNewAlarm(
         timeInMillis: Long,
         weekdays: Set<Int>,
@@ -137,31 +125,7 @@ class MainActivity : AppCompatActivity() {
         }
         saveAlarms()
         renderAlarms()
-        showAlarmInfo()
         Toast.makeText(this, getString(R.string.alarm_added), Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showAlarmInfo() {
-        // Removed for new design
-    }
-
-    private fun hideAlarmInfo() {
-        // Removed for new design
-    }
-
-    private fun formatWeekdays(days: Set<Int>): String {
-        if (days.isEmpty()) return ""
-        val dfs = DateFormatSymbols(Locale.getDefault())
-        val names = mapOf(
-            Calendar.SUNDAY to dfs.shortWeekdays[Calendar.SUNDAY],
-            Calendar.MONDAY to dfs.shortWeekdays[Calendar.MONDAY],
-            Calendar.TUESDAY to dfs.shortWeekdays[Calendar.TUESDAY],
-            Calendar.WEDNESDAY to dfs.shortWeekdays[Calendar.WEDNESDAY],
-            Calendar.THURSDAY to dfs.shortWeekdays[Calendar.THURSDAY],
-            Calendar.FRIDAY to dfs.shortWeekdays[Calendar.FRIDAY],
-            Calendar.SATURDAY to dfs.shortWeekdays[Calendar.SATURDAY]
-        )
-        return days.sorted().joinToString(",") { names[it] ?: "" }
     }
 
     private fun saveAlarms() {
@@ -179,25 +143,11 @@ class MainActivity : AppCompatActivity() {
 
         val inflater = layoutInflater
         val dfs = java.text.DateFormatSymbols(resources.configuration.locales[0])
-        // Android: Calendar.MONDAY = 2 ... Calendar.SUNDAY = 1
-        val weekDayNames = listOf(
-            dfs.shortWeekdays[Calendar.MONDAY],
-            dfs.shortWeekdays[Calendar.TUESDAY],
-            dfs.shortWeekdays[Calendar.WEDNESDAY],
-            dfs.shortWeekdays[Calendar.THURSDAY],
-            dfs.shortWeekdays[Calendar.FRIDAY],
-            dfs.shortWeekdays[Calendar.SATURDAY],
-            dfs.shortWeekdays[Calendar.SUNDAY]
-        )
         val weekDayCalendar = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY,
-            Calendar.SATURDAY,
-            Calendar.SUNDAY
+            Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
+            Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY
         )
+        val weekDayNames = weekDayCalendar.map { dfs.shortWeekdays[it] }
         alarms.sortedBy { it.timeInMillis }.forEach { alarm ->
             val view = inflater.inflate(R.layout.item_alarm, binding.alarmsContainer, false)
             val tvTime = view.findViewById<android.widget.TextView>(R.id.tvAlarmTime)
@@ -212,25 +162,14 @@ class MainActivity : AppCompatActivity() {
             val minute = cal.get(Calendar.MINUTE)
             tvTime.text = formatTime(hour, minute)
 
-            val challengeType = try {
-                 ChallengeType.valueOf(alarm.challengeType)
-            } catch (e: Exception) { ChallengeType.NONE }
-            
-            val (iconRes, nameRes) = when(challengeType) {
-                ChallengeType.SNAKE -> R.drawable.ic_challenge_snake to R.string.chip_snake
-                ChallengeType.DOTS -> R.drawable.ic_challenge_dots to R.string.chip_dots
-                ChallengeType.MATH -> R.drawable.ic_challenge_math to R.string.chip_math
-                ChallengeType.COLOR -> R.drawable.ic_challenge_color to R.string.chip_color
-                ChallengeType.SHAKE -> R.drawable.ic_challenge_shake to R.string.challenge_shake
-                ChallengeType.HOLD -> R.drawable.ic_challenge_hold to R.string.challenge_hold
-                else -> R.drawable.ic_leaf to R.string.edit_morning_me
-            }
-            ivChallengeIcon.setImageResource(iconRes)
+            val challengeType = ChallengeType.from(alarm.challengeType)
+
+            ivChallengeIcon.setImageResource(challengeType.iconRes)
             if (challengeType == ChallengeType.NONE) {
                 tvChallengeName.visibility = View.GONE
             } else {
                 tvChallengeName.visibility = View.VISIBLE
-                tvChallengeName.text = getString(nameRes)
+                tvChallengeName.text = getString(challengeType.labelRes)
             }
 
             val metaText = alarm.description.trim()
@@ -331,7 +270,6 @@ class MainActivity : AppCompatActivity() {
             alarms.removeAll { it.id == id }
             saveAlarms()
             renderAlarms()
-            if (alarms.isEmpty()) hideAlarmInfo() else showAlarmInfo()
             Toast.makeText(this, getString(R.string.alarm_deleted), Toast.LENGTH_SHORT).show()
             return
         }
@@ -351,7 +289,6 @@ class MainActivity : AppCompatActivity() {
 
         saveAlarms()
         renderAlarms()
-        showAlarmInfo()
     }
 
     private fun updateAlarmEnabled(item: AlarmData, enabled: Boolean) {
@@ -363,7 +300,6 @@ class MainActivity : AppCompatActivity() {
         }
         saveAlarms()
         renderAlarms()
-        showAlarmInfo()
     }
 
     private fun applySavedTheme(prefs: SharedPreferences) {
@@ -432,19 +368,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun formatTime(hour24: Int, minute: Int): CharSequence {
         val is24 = prefs.getBoolean("is24h", true)
-        return if (is24) {
-            "%02d:%02d".format(hour24, minute)
-        } else {
-            val hour12 = ((hour24 + 11) % 12) + 1
-            val suffix = if (hour24 >= 12) getString(R.string.time_pm) else getString(R.string.time_am)
-            val text = "%d:%02d %s".format(hour12, minute, suffix)
-            val spannable = SpannableString(text)
-            val suffixStart = text.lastIndexOf(' ') + 1
-            if (suffixStart in 1 until text.length) {
-                spannable.setSpan(RelativeSizeSpan(0.7f), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannable.setSpan(ForegroundColorSpan(getColor(R.color.purple_medium)), suffixStart, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            spannable
-        }
+        return TimeFormatter.format(this, hour24, minute, is24)
     }
 }

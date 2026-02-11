@@ -1,4 +1,4 @@
-package com.frovexsoftware.smartup
+package com.frovexsoftware.smartup.alarm
 
 import android.app.Application
 import android.app.Notification
@@ -14,6 +14,8 @@ import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.frovexsoftware.smartup.R
+import com.frovexsoftware.smartup.ui.StopAlarmActivity
 
 object AlarmNotifier {
     private const val CHANNEL_ID = "alarm_channel"
