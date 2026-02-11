@@ -85,9 +85,9 @@
     <string name="challenge_math">Math example</string>
     <string name="challenge_date">Enter the date for today</string>
     <string name="challenge_color">Guess the color</string>
-    <string name="challenge_shake">Потрясти телефон</string>
-    <string name="challenge_hold">Удерживать кнопку</string>
-    <string name="challenge_random">Случайное испытание</string>
+    <string name="challenge_shake">Shake phone</string>
+    <string name="challenge_hold">Hold button</string>
+    <string name="challenge_random">Random challenge</string>
     <string name="common_cancel">Cancel</string>
 
     <string name="snake_instruction">Collect 5 apples</string>
@@ -100,23 +100,32 @@
 
     <string name="math_submit">Check</string>
     <string name="math_question">%1$d + %2$d = ?</string>
+    <string name="math_title">Solve the problem</string>
+    <string name="math_wrong">Wrong answer, try again</string>
+    <string name="color_title">Name the color</string>
+    <string name="color_wrong">Wrong, try again</string>
+    <string name="date_title">Today\'s date</string>
+    <string name="date_wrong">Wrong date, try again</string>
+    <string name="challenge_complete">Correct!</string>
+    <string name="snake_title">Snake</string>
+    <string name="date_challenge_format_hint">DD.MM.YYYY</string>
 
     <string name="alarm_ringing_toast">Alarm ringing!</string>
     <string name="alarm_notification_title">Alarm</string>
     <string name="alarm_notification_text">Tap to stop</string>
     <string name="alarm_channel_name">Alarms</string>
     <string name="alarm_channel_desc">Alarm notifications</string>
-    <string name="alarm_no_challenge_title">Будильник</string>
-    <string name="alarm_stop">Выключить</string>
-    <string name="alarm_snooze">Отложить на 10 минут</string>
-    <string name="shake_title">Потрясти телефон</string>
-    <string name="shake_instruction">Потрясите устройство 10 раз</string>
+    <string name="alarm_no_challenge_title">Alarm</string>
+    <string name="alarm_stop">Stop</string>
+    <string name="alarm_snooze">Snooze 10 minutes</string>
+    <string name="shake_title">Shake phone</string>
+    <string name="shake_instruction">Shake the device 10 times</string>
     <string name="shake_progress">%1$d/%2$d</string>
     <string name="shake_progress_placeholder">0/10</string>
-    <string name="hold_title">Удерживание</string>
-    <string name="hold_instruction">Удерживайте кнопку 10 секунд</string>
-    <string name="hold_button">Держать</string>
-    <string name="extra_challenges">Доп. испытания</string>
+    <string name="hold_title">Hold</string>
+    <string name="hold_instruction">Hold the button for 10 seconds</string>
+    <string name="hold_button">Hold</string>
+    <string name="extra_challenges">Extra challenges</string>
 
     <string name="edit_morning_ritual">Morning ritual</string>
     <string name="edit_morning_me">No challenge</string>

@@ -16,17 +16,17 @@ class DotsChallengeFragment : Fragment() {
     private data class DotPattern(val name: String, val sequence: List<Int>)
 
     private val availablePatterns = listOf(
-        // Г: левая колонка вниз + нижняя строка вправо
-        DotPattern("Г", listOf(0, 3, 6, 7, 8)),
+        // Г: вверх по левой стороне, потом вправо по верху
+        DotPattern("Г", listOf(6, 3, 0, 1, 2)),
         // Z: верхний ряд, диагональ, нижний ряд
         DotPattern("Z", listOf(0, 1, 2, 4, 6, 7, 8)),
-        // N: диагональ снизу слева вверх + диагональ вниз вправо
+        // N: вверх по левой, диагональ вниз, вверх по правой
         DotPattern("N", listOf(6, 3, 0, 4, 8, 5, 2)),
-        // П: верхняя строка и боковые вниз
-        DotPattern("П", listOf(0, 1, 2, 5, 8, 7, 6, 3)),
-        // L: правая колонка вниз + нижняя строка влево (зеркало Г)
-        DotPattern("L", listOf(2, 5, 8, 7, 6)),
-        // U: боковые вниз и вверх по диагонали вправо
+        // П: вверх по левой, по верху, вниз по правой
+        DotPattern("П", listOf(6, 3, 0, 1, 2, 5, 8)),
+        // L: вниз по левой, вправо по низу
+        DotPattern("L", listOf(0, 3, 6, 7, 8)),
+        // U: вниз по левой, по низу, вверх по правой
         DotPattern("U", listOf(0, 3, 6, 7, 8, 5, 2))
     )
 
@@ -84,9 +84,13 @@ class DotsChallengeFragment : Fragment() {
     private fun handlePatternComplete(pattern: List<Int>) {
         if (pattern == targetPattern.sequence) {
             binding.tvDotsError.text = getString(R.string.dots_pattern_complete)
+            binding.tvDotsError.setBackgroundResource(R.drawable.bg_success_chip)
+            binding.tvDotsError.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.challenge_success))
             (activity as? ChallengeCallback)?.onChallengeCompleted()
         } else {
             binding.tvDotsError.text = getString(R.string.dots_wrong_pattern)
+            binding.tvDotsError.setBackgroundResource(R.drawable.bg_error_chip)
+            binding.tvDotsError.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.challenge_error))
             binding.patternView.resetUserPattern()
             updateProgress(0)
         }

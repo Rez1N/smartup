@@ -15,6 +15,7 @@ import java.util.Locale
 class DateChallengeFragment : Fragment() {
     private lateinit var answerEditText: EditText
     private lateinit var submitButton: Button
+    private lateinit var tvFeedback: android.widget.TextView
 
     // Allow injecting a date for testing
     var dateProvider: () -> Date = { Date() }
@@ -28,10 +29,14 @@ class DateChallengeFragment : Fragment() {
 
         answerEditText = view.findViewById(R.id.answerEditText)
         submitButton = view.findViewById(R.id.submitButton)
+        tvFeedback = view.findViewById(R.id.tvDateFeedback)
 
         submitButton.setOnClickListener {
             if (isCorrect(answerEditText.text.toString())) {
+                showFeedback(getString(R.string.challenge_complete), isError = false)
                 (activity as? ChallengeCallback)?.onChallengeCompleted()
+            } else {
+                showFeedback(getString(R.string.date_wrong), isError = true)
             }
         }
 
@@ -50,5 +55,17 @@ class DateChallengeFragment : Fragment() {
             .replace("[^0-9]".toRegex(), "")
 
         return normalized == correctFull || normalized == correctShort
+    }
+
+    private fun showFeedback(message: String, isError: Boolean) {
+        tvFeedback.text = message
+        tvFeedback.visibility = android.view.View.VISIBLE
+        if (isError) {
+            tvFeedback.setBackgroundResource(R.drawable.bg_error_chip)
+            tvFeedback.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.challenge_error))
+        } else {
+            tvFeedback.setBackgroundResource(R.drawable.bg_success_chip)
+            tvFeedback.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.challenge_success))
+        }
     }
 }

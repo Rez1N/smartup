@@ -1,36 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    android:gravity="center_horizontal"
+    android:padding="@dimen/spacing_l"
+    android:background="@drawable/bg_app_gradient">
 
-    <TextView
-        android:id="@+id/tvShakeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/shake_title"
-        android:textColor="@color/purple_dark"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+    <FrameLayout
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/bg_challenge_icon_circle">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_challenge_shake"
+app:tint="?attr/colorPrimary" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvShakeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:text="@string/shake_title"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary" />
 
     <TextView
         android:id="@+id/tvShakeInstruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="@string/shake_instruction"
-        android:textColor="@color/purple_medium"
         android:textSize="14sp"
-        android:layout_marginBottom="16dp" />
+        android:textColor="@color/lilac_on_surface_secondary" />
 
-    <TextView
-        android:id="@+id/tvShakeCount"
-        android:layout_width="wrap_content"
+    <!-- Progress card -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/shake_progress_placeholder"
-        android:textColor="@color/purple_dark"
-        android:textSize="24sp" />
+        android:layout_marginTop="48dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_challenge_content_card"
+        android:padding="32dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvShakeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shake_progress_placeholder"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:fontFamily="monospace" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/shakeProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            app:indicatorColor="@color/purple_accent"
+            app:trackColor="@color/challenge_icon_bg"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivShakePhone"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_challenge_shake"
+        app:tint="@color/purple_medium"
+        android:alpha="0.6" />
 
 </LinearLayout>
