@@ -12,7 +12,7 @@
     <string name="color_submit">Проверить</string>
 
     <string name="date_challenge_hint">Введите сегодняшнюю дату</string>
-    <string name="date_challenge_format">дд.мм.гггг</string>
+    <string name="date_challenge_format">ДД.ММ.ГГГГ</string>
     <string name="date_challenge_helper">Можно использовать точки, слэши или пробелы</string>
     <string name="date_submit">Проверить</string>
 
@@ -98,11 +98,35 @@
     <string name="math_submit">Проверить</string>
     <string name="math_question">%1$d + %2$d = ?</string>
 
+    <string name="math_title">Решите пример</string>
+    <string name="math_wrong">Неверный ответ, попробуйте снова</string>
+    <string name="color_title">Назовите цвет</string>
+    <string name="color_wrong">Неверно, попробуйте снова</string>
+    <string name="date_title">Сегодняшняя дата</string>
+    <string name="date_wrong">Неверная дата, попробуйте снова</string>
+    <string name="challenge_complete">Правильно!</string>
+    <string name="snake_title">Змейка</string>
+    <string name="date_challenge_format_hint">ДД.ММ.ГГГГ</string>
+
     <string name="alarm_ringing_toast">Будильник звонит!</string>
     <string name="alarm_notification_title">Будильник</string>
     <string name="alarm_notification_text">Нажмите, чтобы остановить</string>
     <string name="alarm_channel_name">Будильники</string>
     <string name="alarm_channel_desc">Уведомления будильника</string>
+    <string name="alarm_no_challenge_title">Будильник</string>
+    <string name="alarm_stop">Выключить</string>
+    <string name="alarm_snooze">Отложить на 10 минут</string>
+    <string name="shake_title">Потрясти телефон</string>
+    <string name="shake_instruction">Потрясите устройство 10 раз</string>
+    <string name="shake_progress">%1$d/%2$d</string>
+    <string name="shake_progress_placeholder">0/10</string>
+    <string name="hold_title">Удерживание</string>
+    <string name="hold_instruction">Удерживайте кнопку 10 секунд</string>
+    <string name="hold_button">Держать</string>
+    <string name="extra_challenges">Доп. испытания</string>
+    <string name="challenge_shake">Потрясти телефон</string>
+    <string name="challenge_hold">Удерживать кнопку</string>
+    <string name="challenge_random">Случайное испытание</string>
 
     <string name="edit_morning_ritual">Утренний ритуал</string>
     <string name="edit_morning_me">Без испытания</string>

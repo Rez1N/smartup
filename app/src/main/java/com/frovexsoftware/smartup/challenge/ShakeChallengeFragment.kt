@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.frovexsoftware.smartup.R
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlin.math.sqrt
 
 class ShakeChallengeFragment : Fragment(), SensorEventListener {
@@ -20,6 +21,8 @@ class ShakeChallengeFragment : Fragment(), SensorEventListener {
     private var accelerometer: Sensor? = null
 
     private lateinit var tvShakeCount: TextView
+    private lateinit var shakeProgress: LinearProgressIndicator
+    private var phoneIcon: View? = null
 
     private var lastShakeTime = 0L
     private var shakeCount = 0
@@ -31,6 +34,10 @@ class ShakeChallengeFragment : Fragment(), SensorEventListener {
     ): View {
         val view = inflater.inflate(R.layout.fragment_shake_challenge, container, false)
         tvShakeCount = view.findViewById(R.id.tvShakeCount)
+        shakeProgress = view.findViewById(R.id.shakeProgress)
+        shakeProgress.max = REQUIRED_SHAKES
+        shakeProgress.progress = 0
+        phoneIcon = view.findViewById(R.id.ivShakePhone)
         updateCounter()
         return view
     }
@@ -79,6 +86,10 @@ class ShakeChallengeFragment : Fragment(), SensorEventListener {
 
     private fun updateCounter() {
         tvShakeCount.text = getString(R.string.shake_progress, shakeCount, REQUIRED_SHAKES)
+        shakeProgress.setProgressCompat(shakeCount, true)
+        // Shake the phone icon for visual feedback
+        phoneIcon?.animate()?.rotationBy(if (shakeCount % 2 == 0) 15f else -15f)
+            ?.setDuration(120)?.start()
     }
 
     private companion object {

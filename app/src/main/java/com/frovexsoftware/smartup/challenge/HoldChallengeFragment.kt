@@ -16,6 +16,7 @@ class HoldChallengeFragment : Fragment() {
 
     private lateinit var btnHold: MaterialButton
     private lateinit var progress: CircularProgressIndicator
+    private var tvTimer: android.widget.TextView? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private var startTime = 0L
@@ -27,6 +28,9 @@ class HoldChallengeFragment : Fragment() {
             val elapsed = System.currentTimeMillis() - startTime
             val percent = (elapsed.coerceAtMost(HOLD_DURATION_MS) * 1000L / HOLD_DURATION_MS).toInt()
             progress.progress = percent
+            val secs = (elapsed / 1000).toInt()
+            val totalSecs = (HOLD_DURATION_MS / 1000).toInt()
+            tvTimer?.text = "0:%02d / 0:%02d".format(secs.coerceAtMost(totalSecs), totalSecs)
             if (elapsed >= HOLD_DURATION_MS) {
                 running = false
                 (activity as? ChallengeCallback)?.onChallengeCompleted()
@@ -44,6 +48,7 @@ class HoldChallengeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_hold_challenge, container, false)
         btnHold = view.findViewById(R.id.btnHold)
         progress = view.findViewById(R.id.holdProgress)
+        tvTimer = view.findViewById(R.id.tvHoldTimer)
         progress.max = 1000
         progress.progress = 0
 
@@ -79,6 +84,7 @@ class HoldChallengeFragment : Fragment() {
         running = false
         handler.removeCallbacks(ticker)
         progress.progress = 0
+        tvTimer?.text = "0:00 / 0:10"
     }
 
     private companion object {

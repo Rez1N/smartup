@@ -100,6 +100,15 @@
 
     <string name="math_submit">Check</string>
     <string name="math_question">%1$d + %2$d = ?</string>
+    <string name="math_title">Solve the problem</string>
+    <string name="math_wrong">Wrong answer, try again</string>
+    <string name="color_title">Name the color</string>
+    <string name="color_wrong">Wrong, try again</string>
+    <string name="date_title">Today\'s date</string>
+    <string name="date_wrong">Wrong date, try again</string>
+    <string name="challenge_complete">Correct!</string>
+    <string name="snake_title">Snake</string>
+    <string name="date_challenge_format_hint">DD.MM.YYYY</string>
 
     <string name="alarm_ringing_toast">Alarm ringing!</string>
     <string name="alarm_notification_title">Alarm</string>

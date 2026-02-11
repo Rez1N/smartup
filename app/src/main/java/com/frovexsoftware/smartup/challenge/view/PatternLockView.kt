@@ -56,11 +56,13 @@ class PatternLockView @JvmOverloads constructor(
         strokeJoin = Paint.Join.ROUND
         color = Color.parseColor("#B2D7FF")
     }
-    private val nodeRadiusPx = 5f // ~10px diameter (dp)
-    private val haloRadiusPx = 30f // soft shadow/halo around dots
+    private val nodeRadiusPx = 12f
+    private val haloRadiusPx = 34f
 
     private var nodeRadius: Float = 0f
     private var haloRadius: Float = 0f
+    private var offsetX: Float = 0f
+    private var offsetY: Float = 0f
     private var fingerX: Float? = null
     private var fingerY: Float? = null
 
@@ -100,10 +102,12 @@ class PatternLockView @JvmOverloads constructor(
         val density = resources.displayMetrics.density
         nodeRadius = nodeRadiusPx * density
         haloRadius = haloRadiusPx * density
+        offsetX = (w - size) / 2f
+        offsetY = (h - size) / 2f
         for (row in 0 until gridSize) {
             for (col in 0 until gridSize) {
-                val cx = col * cell + cell / 2f
-                val cy = row * cell + cell / 2f
+                val cx = offsetX + col * cell + cell / 2f
+                val cy = offsetY + row * cell + cell / 2f
                 nodes.add(PointF(cx, cy))
             }
         }
@@ -158,6 +162,7 @@ class PatternLockView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                parent?.requestDisallowInterceptTouchEvent(true)
                 resetUserPattern()
                 handleTouch(event.x, event.y)
             }
@@ -167,10 +172,19 @@ class PatternLockView @JvmOverloads constructor(
                 fingerY = event.y
                 invalidate()
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_UP -> {
                 fingerX = null
                 fingerY = null
-                listener?.onPatternCompleted(userPattern.toList())
+                if (userPattern.size >= 2) {
+                    listener?.onPatternCompleted(userPattern.toList())
+                }
+                parent?.requestDisallowInterceptTouchEvent(false)
+                invalidate()
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                fingerX = null
+                fingerY = null
+                parent?.requestDisallowInterceptTouchEvent(false)
                 invalidate()
             }
         }

@@ -18,6 +18,7 @@ class ColorChallengeFragment : Fragment() {
     private lateinit var colorView: View
     private lateinit var answerEditText: EditText
     private lateinit var submitButton: Button
+    private lateinit var tvFeedback: TextView
 
     private var correctColorName: String = ""
     private var currentColor: Int = Color.RED
@@ -56,12 +57,16 @@ class ColorChallengeFragment : Fragment() {
         colorView = view.findViewById(R.id.colorView)
         answerEditText = view.findViewById(R.id.answerEditText)
         submitButton = view.findViewById(R.id.submitButton)
+        tvFeedback = view.findViewById(R.id.tvColorFeedback)
 
         generateChallenge()
 
         submitButton.setOnClickListener {
             if (isCorrect(answerEditText.text.toString())) {
+                showFeedback(getString(R.string.challenge_complete), isError = false)
                 (activity as? ChallengeCallback)?.onChallengeCompleted()
+            } else {
+                showFeedback(getString(R.string.color_wrong), isError = true)
             }
         }
 
@@ -88,8 +93,19 @@ class ColorChallengeFragment : Fragment() {
     private fun normalize(text: String): String {
         val simplified = text.trim().lowercase(Locale.getDefault())
             .replace("ё", "е")
-        // Strip diacritics to catch similar inputs across keyboards
         val decomposed = Normalizer.normalize(simplified, Normalizer.Form.NFD)
         return decomposed.replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+    }
+
+    private fun showFeedback(message: String, isError: Boolean) {
+        tvFeedback.text = message
+        tvFeedback.visibility = View.VISIBLE
+        if (isError) {
+            tvFeedback.setBackgroundResource(R.drawable.bg_error_chip)
+            tvFeedback.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.challenge_error))
+        } else {
+            tvFeedback.setBackgroundResource(R.drawable.bg_success_chip)
+            tvFeedback.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.challenge_success))
+        }
     }
 }

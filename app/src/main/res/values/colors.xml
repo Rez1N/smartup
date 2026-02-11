@@ -26,4 +26,20 @@
     <color name="lilac_gradient_end">#F7F2FC</color>
     <color name="lilac_surface_glass_stroke">#D4C9E8</color>
     <color name="lilac_on_surface_secondary">#9B8FB3</color>
+
+    <!-- Challenge modern UI -->
+    <color name="challenge_icon_bg">#E8DEF8</color>
+    <color name="challenge_error">#BA1A1A</color>
+    <color name="challenge_error_bg">#FFDAD6</color>
+    <color name="challenge_success">#006D40</color>
+    <color name="challenge_success_bg">#C4EED0</color>
+    <color name="snake_board_bg">#1D1B20</color>
+    <color name="snake_body">#D0BCFF</color>
+    <color name="snake_head">#EADDFF</color>
+    <color name="snake_food">#FFB4AB</color>
+    <color name="snake_grid_line">#2B2930</color>
+    <color name="challenge_btn_outline">#CAC4D0</color>
+    <color name="challenge_card_bg">#F0FFFFFF</color>
+    <color name="challenge_card_stroke">#D4C9E8</color>
+    <color name="challenge_button_bg">#5A4870</color>
 </resources>

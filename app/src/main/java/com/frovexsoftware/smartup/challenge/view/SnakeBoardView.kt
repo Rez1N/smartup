@@ -4,15 +4,18 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.frovexsoftware.smartup.R
 import kotlin.math.min
 import java.util.LinkedList
 import java.util.Random
 
 class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
-    private val paint = Paint()
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     internal val snake = LinkedList<Pair<Int, Int>>()
     private var food = Pair(-1, -1)
     private var direction = Direction.RIGHT
@@ -23,7 +26,13 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
     private var cellSize = 0f
     private var offsetX = 0f
     private var offsetY = 0f
-    private var inset = 0f
+    private var segmentRadius = 0f
+
+    private val boardColor = ContextCompat.getColor(context, R.color.snake_board_bg)
+    private val gridColor = ContextCompat.getColor(context, R.color.snake_grid_line)
+    private val snakeBodyColor = ContextCompat.getColor(context, R.color.snake_body)
+    private val snakeHeadColor = ContextCompat.getColor(context, R.color.snake_head)
+    private val foodColor = ContextCompat.getColor(context, R.color.snake_food)
 
     var onGameWon: (() -> Unit)? = null
 
@@ -105,36 +114,49 @@ class SnakeBoardView(context: Context, attrs: AttributeSet?) : View(context, att
         cellSize = usable / boardSize
         offsetX = (w - usable) / 2f
         offsetY = (h - usable) / 2f
-        inset = cellSize * 0.1f
+        segmentRadius = cellSize * 0.35f
     }
+
+    private val rect = RectF()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         // Board background
-        paint.color = Color.BLACK
-        canvas.drawRect(offsetX, offsetY, offsetX + cellSize * boardSize, offsetY + cellSize * boardSize, paint)
-
-        // Draw food
-        paint.color = Color.YELLOW
-        canvas.drawRect(
-            offsetX + food.first * cellSize + inset,
-            offsetY + food.second * cellSize + inset,
-            offsetX + (food.first + 1) * cellSize - inset,
-            offsetY + (food.second + 1) * cellSize - inset,
-            paint
+        paint.color = boardColor
+        paint.style = Paint.Style.FILL
+        canvas.drawRoundRect(
+            offsetX, offsetY,
+            offsetX + cellSize * boardSize,
+            offsetY + cellSize * boardSize,
+            cellSize, cellSize, paint
         )
 
-        // Draw snake
-        paint.color = Color.GREEN
-        for (segment in snake) {
-            canvas.drawRect(
-                offsetX + segment.first * cellSize + inset,
-                offsetY + segment.second * cellSize + inset,
-                offsetX + (segment.first + 1) * cellSize - inset,
-                offsetY + (segment.second + 1) * cellSize - inset,
-                paint
-            )
+        // Subtle grid
+        paint.color = gridColor
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 1f
+        for (i in 1 until boardSize) {
+            val x = offsetX + i * cellSize
+            val y = offsetY + i * cellSize
+            canvas.drawLine(x, offsetY, x, offsetY + cellSize * boardSize, paint)
+            canvas.drawLine(offsetX, y, offsetX + cellSize * boardSize, y, paint)
+        }
+        paint.style = Paint.Style.FILL
+
+        // Draw food (rounded)
+        paint.color = foodColor
+        val fx = offsetX + food.first * cellSize + cellSize / 2f
+        val fy = offsetY + food.second * cellSize + cellSize / 2f
+        canvas.drawCircle(fx, fy, segmentRadius, paint)
+
+        // Draw snake body
+        for ((i, segment) in snake.withIndex()) {
+            paint.color = if (i == 0) snakeHeadColor else snakeBodyColor
+            val left = offsetX + segment.first * cellSize + (cellSize - segmentRadius * 2) / 2f
+            val top = offsetY + segment.second * cellSize + (cellSize - segmentRadius * 2) / 2f
+            rect.set(left, top, left + segmentRadius * 2, top + segmentRadius * 2)
+            canvas.drawRoundRect(rect, segmentRadius * 0.5f, segmentRadius * 0.5f, paint)
         }
     }
 
